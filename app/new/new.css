@@ -370,181 +370,6 @@ html:has(.meridian-page) {
   scroll-padding-top: 0;
 }
 
-/* Case studies */
-.case-study-grid {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: 1fr 1fr;
-}
-.case-study-card {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  min-height: 270px;
-  border-radius: 20px;
-  text-align: left;
-  color: oklch(0.9 0 0);
-  background: oklch(0.205 0 0);
-  cursor: pointer;
-  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.045);
-}
-.case-study-card:first-child {
-  grid-row: span 2;
-}
-.case-art {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: var(--case-gradient);
-}
-.case-emerald {
-  --case-gradient: linear-gradient(
-    145deg,
-    oklch(0.255 0.018 170),
-    oklch(0.205 0.009 170)
-  );
-}
-.case-violet {
-  --case-gradient: linear-gradient(
-    145deg,
-    oklch(0.255 0.017 290),
-    oklch(0.205 0.009 290)
-  );
-}
-.case-amber {
-  --case-gradient: linear-gradient(
-    145deg,
-    oklch(0.255 0.018 65),
-    oklch(0.205 0.009 65)
-  );
-}
-.case-study-top {
-  position: absolute;
-  inset: 26px 28px auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  font: 10px/1.5 var(--font-jbmono);
-  letter-spacing: 0.12em;
-  color: oklch(0.7 0 0);
-}
-.case-study-copy {
-  position: absolute;
-  inset: auto 28px 28px;
-  display: block;
-}
-.case-category {
-  display: block;
-  font: 10px/1.6 var(--font-jbmono);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: oklch(0.73 0 0);
-}
-.case-title {
-  display: block;
-  margin-top: 12px;
-  font-size: 27px;
-  line-height: 1.15;
-  letter-spacing: -0.025em;
-  text-wrap: balance;
-}
-.case-study-card:first-child .case-title {
-  max-width: 340px;
-  font-size: clamp(32px, 3.4vw, 48px);
-}
-.case-cta {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  margin-top: 22px;
-  font-size: 13px;
-  color: oklch(0.76 0 0);
-}
-.case-study-card:hover {
-  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.12);
-}
-.case-study-card:focus-visible,
-.case-close:focus-visible,
-.case-book:focus-visible {
-  outline: 2px solid oklch(0.9 0.06 170);
-  outline-offset: 5px;
-}
-.case-dialog {
-  margin: auto;
-  padding: 0;
-  width: min(520px, calc(100vw - 32px));
-  max-height: calc(100dvh - 32px);
-  overflow-y: auto;
-  border: 1px solid oklch(1 0 0 / 0.12);
-  border-radius: 24px;
-  color: oklch(0.96 0 0);
-  background: oklch(0.17 0.008 260);
-}
-.case-dialog::backdrop {
-  background: oklch(0.05 0 0 / 0.75);
-  backdrop-filter: blur(8px);
-}
-.case-dialog-inner {
-  position: relative;
-}
-.case-dialog-art {
-  height: 140px;
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-}
-.case-dialog-copy {
-  padding: 30px;
-}
-.case-close {
-  position: absolute;
-  right: 12px;
-  top: 12px;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: oklch(0.12 0 0 / 0.6);
-  cursor: pointer;
-}
-.case-book {
-  margin-top: 28px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  min-height: 48px;
-  border-radius: 999px;
-  background: oklch(0.95 0.005 170);
-  color: oklch(0.17 0.008 260);
-  font-size: 14px;
-  font-weight: 500;
-}
-.case-book:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-@media (max-width: 767px) {
-  .case-study-grid {
-    grid-template-columns: 1fr;
-  }
-  .case-study-card,
-  .case-study-card:first-child {
-    min-height: 340px;
-    grid-row: auto;
-  }
-  .case-study-card:first-child .case-title {
-    font-size: 32px;
-  }
-  .case-dialog-copy {
-    padding: 24px;
-  }
-}
-
 .meridian-page .newsletter-section {
   width: min(768px, calc(100% - 32px));
   margin: 0 auto 48px;
@@ -606,99 +431,214 @@ html:has(.meridian-page) {
   cursor: not-allowed;
 }
 .meridian-page .newsletter-card .newsletter-status { font-size: 12px; }
-.meridian-page .early-bird-section {
-  padding: 16px 32px 56px;
+.meridian-page .pricing-section {
+  width: min(920px, calc(100% - 48px));
+  margin: 8px auto 72px;
+  scroll-margin-top: 6rem;
 }
-.meridian-page .early-bird-card {
-  display: grid;
-  grid-template-columns: 1fr 280px;
-  align-items: center;
-  gap: 40px;
-  max-width: 960px;
-  margin-inline: auto;
-  padding: 30px 32px;
-  background: oklch(0.205 0.006 150);
-  color: oklch(0.92 0.008 110);
-  border-radius: 18px;
-  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.07);
+.meridian-page .pricing-intro {
+  max-width: 28rem;
+  margin: 0 auto 36px;
+  text-align: center;
 }
-.meridian-page .early-bird-eyebrow {
+.meridian-page .pricing-kicker {
   display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: oklch(0.79 0.028 135);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 12px;
+  color: var(--muted-foreground);
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
-.meridian-page .early-bird-eyebrow::before {
-  content: '';
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: currentColor;
-}
-.meridian-page .early-bird-card h2 {
-  margin-block: 10px;
-  font-family: var(--font-editorial), Georgia, serif;
-  font-weight: 400;
-  font-synthesis: none;
-  font-size: clamp(26px, 2.6vw, 32px);
-  line-height: 1.2;
-  letter-spacing: -0.025em;
+.meridian-page .pricing-intro h2 {
+  margin: 16px 0 10px;
+  color: var(--foreground);
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
+  font-size: clamp(1.75rem, 3.2vw, 2.25rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
   text-wrap: balance;
 }
-.meridian-page .early-bird-card p {
-  color: oklch(0.78 0.006 150);
-  font-size: 14px;
+.meridian-page .pricing-intro p {
+  margin: 0 auto;
+  color: var(--muted-foreground);
+  font-size: 15px;
   line-height: 1.6;
+}
+.meridian-page .pricing-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  border-radius: 28px;
+  background: color-mix(in srgb, var(--foreground) 4%, var(--background));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 9%, transparent);
+}
+.meridian-page .pricing-pane {
+  display: flex;
+  flex-direction: column;
+  padding: 32px 32px 28px;
+  color: var(--foreground);
+}
+.meridian-page .pricing-pane.is-enterprise {
+  background: color-mix(in srgb, var(--foreground) 3.5%, transparent);
+  box-shadow: inset 1px 0 0 color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+.meridian-page .pricing-pane h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.meridian-page .pricing-blurb {
+  margin: 10px 0 0;
+  max-width: 22rem;
+  font-size: 16px;
+  line-height: 1.45;
   text-wrap: pretty;
 }
-.meridian-page .early-bird-card .early-bird-details {
-  margin-top: 8px;
-  color: oklch(0.67 0.006 150);
-  font-size: 12px;
+.meridian-page .pricing-price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 28px 0 0;
 }
-.meridian-page .early-bird-months {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
-}
-.meridian-page .early-bird-month {
-  display: grid;
-  place-items: center;
-  height: 50px;
-  border-radius: 6px;
-  background: oklch(0.265 0.007 150);
-  color: oklch(0.73 0.008 150);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 11px;
+.meridian-page .pricing-price span {
+  font-family: var(--font-inter), Inter, Arial, sans-serif;
+  font-size: clamp(2.25rem, 3vw, 2.75rem);
+  font-weight: 550;
+  letter-spacing: -0.035em;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
 }
-.meridian-page .early-bird-month.bonus {
-  background: oklch(0.77 0.035 130);
-  color: oklch(0.24 0.025 145);
+.meridian-page .pricing-price small {
+  color: var(--muted-foreground);
+  font-size: 14px;
 }
-.meridian-page .early-bird-legend {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 10px;
-  font-size: 11px;
-  color: oklch(0.73 0.008 150);
+.meridian-page .pricing-setup {
+  margin: 10px 0 0;
+  color: var(--foreground);
+  font-size: 14px;
+  line-height: 1.45;
 }
-.meridian-page .early-bird-legend span:last-child {
-  color: oklch(0.82 0.025 130);
+.meridian-page .pricing-setup strong {
+  font-weight: 600;
 }
-@media (max-width: 760px) {
-  .meridian-page .early-bird-section { padding: 16px 16px 40px; }
-  .meridian-page .early-bird-card {
-    grid-template-columns: 1fr;
-    gap: 24px;
-    padding: 24px;
+.meridian-page .pricing-note {
+  margin: 8px 0 0;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.meridian-page .pricing-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  min-height: 44px;
+  margin-top: 24px;
+  padding: 0 20px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--background));
+  color: var(--foreground);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transform: scale(1);
+  transition:
+    transform 160ms cubic-bezier(0.23, 1, 0.32, 1),
+    background-color 160ms cubic-bezier(0.23, 1, 0.32, 1),
+    color 160ms cubic-bezier(0.23, 1, 0.32, 1),
+    border-color 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.meridian-page .pricing-pane.is-monthly .pricing-cta {
+  border-color: transparent;
+  background: var(--foreground);
+  color: var(--background);
+}
+.meridian-page .pricing-cta:active {
+  transform: scale(0.96);
+}
+.meridian-page .pricing-includes {
+  margin: 28px 0 0;
+  padding: 20px 0 0;
+  border-top: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
+  list-style: none;
+}
+.meridian-page .pricing-includes li {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 10px;
+  align-items: start;
+  margin-top: 11px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.meridian-page .pricing-includes li:first-child {
+  margin-top: 0;
+}
+.meridian-page .pricing-includes svg {
+  margin-top: 3px;
+  color: var(--muted-foreground);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .meridian-page .new-reveal:not(.entered) .pricing-intro,
+  .meridian-page .new-reveal:not(.entered) .pricing-pane {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  .meridian-page .early-bird-timeline { max-width: 340px; width: 100%; }
+  .meridian-page .new-reveal.entered .pricing-intro {
+    animation: pricing-in 0.65s cubic-bezier(0.23, 1, 0.32, 1) both;
+  }
+  .meridian-page .new-reveal.entered .pricing-pane.is-monthly {
+    animation: pricing-in 0.7s cubic-bezier(0.23, 1, 0.32, 1) both;
+    animation-delay: 80ms;
+  }
+  .meridian-page .new-reveal.entered .pricing-pane.is-enterprise {
+    animation: pricing-in 0.7s cubic-bezier(0.23, 1, 0.32, 1) both;
+    animation-delay: 160ms;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .meridian-page .pricing-cta:hover {
+    background: var(--foreground);
+    color: var(--background);
+    border-color: transparent;
+  }
+  .meridian-page .pricing-pane.is-monthly .pricing-cta:hover {
+    background: color-mix(in srgb, var(--foreground) 88%, var(--background));
+  }
+}
+@keyframes pricing-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 800px) {
+  .meridian-page .pricing-section {
+    width: min(100%, calc(100% - 32px));
+    margin-bottom: 48px;
+  }
+  .meridian-page .pricing-pair {
+    grid-template-columns: 1fr;
+    border-radius: 24px;
+  }
+  .meridian-page .pricing-pane {
+    padding: 28px 24px 24px;
+  }
+  .meridian-page .pricing-pane.is-enterprise {
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--foreground) 8%, transparent);
+  }
 }
 @media (max-width: 640px) {
   .meridian-page .newsletter-card { padding: 20px; }

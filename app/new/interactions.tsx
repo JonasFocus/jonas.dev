@@ -154,6 +154,9 @@ export function Header() {
                 )}
               </div>
             ))}
+            <a className="nav-link" href="#pricing">
+              Plans
+            </a>
             <a className="nav-link" href="#planning">
               Planning
             </a>
@@ -162,7 +165,7 @@ export function Header() {
             </a>
           </nav>
           <div className="flex items-center gap-2">
-            <a className="new-button ghost hidden sm:inline-flex" href="#docs">
+            <a className="new-button ghost hidden sm:inline-flex" href="#product">
               See our work
             </a>
             <a
@@ -196,6 +199,13 @@ export function Header() {
                 {active === name && links(name)}
               </div>
             ))}
+            <a
+              className="nav-link"
+              href="#pricing"
+              onClick={() => setMobile(false)}
+            >
+              Plans
+            </a>
             <a
               className="nav-link"
               href="#planning"

@@ -1,11 +1,10 @@
-import { EarlyBird } from './early-bird';
+import { Pricing } from './pricing';
 import { Newsletter } from './newsletter';
 import { Hero } from './hero';
 import { Technology } from './technology';
 import { Services } from './services';
 import { Ownership } from './ownership';
 import { Planning } from './planning';
-import { Capabilities } from './capabilities';
 import { Invitation } from './invitation';
 import { Footer } from './footer';
 import { PageShell, Header, Faq } from './interactions';
@@ -21,12 +20,11 @@ export default function HomePage() {
         <div className="newsletter-section">
           <Newsletter />
         </div>
-        <EarlyBird />
+        <Pricing />
         <Technology />
         <Services />
         <Ownership />
         <Planning />
-        <Capabilities />
         <Faq />
         <Invitation />
       </main>

@@ -63,14 +63,6 @@ export function Footer() {
               <ul className="mt-4 flex flex-col gap-3">
                 <li>
                   <a
-                    href="#docs"
-                    className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
-                  >
-                    {'Case studies'}
-                  </a>
-                </li>
-                <li>
-                  <a
                     href="#ecosystem"
                     className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
                   >
@@ -108,10 +100,10 @@ export function Footer() {
                 </li>
                 <li>
                   <a
-                    href="#docs"
+                    href="#support"
                     className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
                   >
-                    {'Case studies'}
+                    {'Questions'}
                   </a>
                 </li>
               </ul>
