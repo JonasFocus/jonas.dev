@@ -8,22 +8,26 @@ export default async function WorkspaceLayout({
 }: {
   children: React.ReactNode;
 }) {
-  await requireOwner();
+  const { user } = await requireOwner();
   return (
     <div className="admin-shell">
       <a href="#admin-content" className="admin-skip">
         Skip to content
       </a>
-      <aside className="admin-sidebar">
+      <header className="admin-masthead">
         <Link href="/admin" className="admin-brand">
-          Jonas<span>Workspace</span>
+          <span className="admin-mark" aria-hidden="true">
+            J
+          </span>
+          Console
         </Link>
-        <AdminNavigation />
-        <div className="admin-sidebar-bottom">
-          <Link href="/">View website ↗</Link>
-          <SignOut />
-        </div>
-      </aside>
+        <Link href="/" className="admin-site-link">
+          jonasinfocus.com
+        </Link>
+        <span className="admin-operator">{user.email}</span>
+        <SignOut />
+      </header>
+      <AdminNavigation />
       <main id="admin-content" className="admin-main">
         {children}
       </main>

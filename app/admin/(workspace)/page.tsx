@@ -5,25 +5,30 @@ export default async function Dashboard() {
   const data = await getDashboard();
   return (
     <>
-      <Heading
-        title="Your work, in view."
-        subtitle="A quiet place to keep track of conversations and what comes next."
-      />
-      <div className="admin-stats">
-        <Link href="/admin/requests?status=new">
-          <span>New requests</span>
-          <strong>{data.newRequests}</strong>
-        </Link>
-        <Link href="/admin/follow-ups">
-          <span>Overdue follow-ups</span>
-          <strong>{data.overdueFollowUps}</strong>
-        </Link>
-        <Link href="/admin/customers">
-          <span>Customers</span>
-          <strong>{data.customers}</strong>
-        </Link>
-      </div>
-      <section className="admin-panel">
+      <section className="admin-feature">
+        <div className="admin-feature-art" aria-hidden="true" />
+        <div className="admin-feature-body">
+          <Heading
+            title="Your work, in view."
+            subtitle="A quiet place to keep track of conversations and what comes next."
+          />
+          <div className="admin-stats">
+            <Link href="/admin/requests?status=new">
+              <strong>{data.newRequests}</strong>
+              <span>New requests</span>
+            </Link>
+            <Link href="/admin/follow-ups">
+              <strong>{data.overdueFollowUps}</strong>
+              <span>Overdue follow-ups</span>
+            </Link>
+            <Link href="/admin/customers">
+              <strong>{data.customers}</strong>
+              <span>Customers</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+      <section className="admin-panel admin-recent">
         <div className="admin-section-heading">
           <h2>Recent requests</h2>
           <Link href="/admin/requests">View all →</Link>
