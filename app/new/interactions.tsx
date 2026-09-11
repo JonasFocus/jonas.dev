@@ -223,52 +223,6 @@ export function Header() {
     </section>
   );
 }
-export function Planner() {
-  const [screens, setScreens] = useState(6);
-  const min = Math.max(2, Math.ceil(screens * 0.65));
-  return (
-    <div className="project-planner">
-      <div className="flex items-center justify-between gap-4">
-        <p className="font-medium text-sm">Project planner</p>
-        <span className="font-mono text-xs">ILLUSTRATIVE</span>
-      </div>
-      <div className="planner-rule" />
-      <label htmlFor="project-screens" className="block mt-6 text-sm">
-        Your core screens
-      </label>
-      <output htmlFor="project-screens" className="planner-number">
-        {screens.toString().padStart(2, '0')} <small>screens</small>
-      </output>
-      <input
-        id="project-screens"
-        type="range"
-        min={1}
-        max={20}
-        step={1}
-        value={screens}
-        onChange={(e) => setScreens(Number(e.target.value))}
-        aria-label="Number of core screens"
-      />
-      <p className="mt-6 text-sm">Estimated build window</p>
-      <output className="planner-estimate" aria-live="polite">
-        {min} – {min + 3} <small>weeks</small>
-      </output>
-      <div className="planner-rule" />
-      <div className="grid grid-cols-2 gap-4 mt-5 text-xs">
-        <p>
-          Project scope<strong className="block mt-1">Agreed together</strong>
-        </p>
-        <p>
-          Final proposal<strong className="block mt-1">After discovery</strong>
-        </p>
-      </div>
-      <p className="planner-note">
-        An example, not a quote. Scope and integrations determine the actual
-        timeline.
-      </p>
-    </div>
-  );
-}
 export function Faq() {
   const [open, setOpen] = useState<number | null>(0);
   return (
