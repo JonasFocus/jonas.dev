@@ -6,7 +6,10 @@ export function Planning() {
       <section className="w-full px-4 py-24 sm:px-8">
         <div className="mx-auto grid w-full max-w-6xl items-center gap-16 lg:grid-cols-2 lg:gap-24">
           <div>
-            <h2 className="text-balance font-serif text-4xl text-foreground leading-[1.05] sm:text-5xl">
+            <span className="inline-flex items-center rounded-full border border-border/60 bg-card px-3 py-1 font-medium text-muted-foreground text-xs">
+              Planning
+            </span>
+            <h2 className="mt-5 text-balance font-serif text-4xl text-foreground leading-[1.05] sm:text-5xl">
               {'One clear scope.'}
               <br />
               {'No hidden surprises.'}
