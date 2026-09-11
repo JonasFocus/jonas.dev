@@ -1,19 +1,19 @@
-import { Planner } from './interactions';
+import { Contents } from './contents';
 
 export function Planning() {
   return (
-    <div id="pricing" className="scroll-mt-24">
+    <div id="planning" className="scroll-mt-24">
       <section className="w-full px-4 py-24 sm:px-8">
-        <div className="mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
+        <div className="mx-auto grid w-full max-w-6xl items-center gap-16 lg:grid-cols-2 lg:gap-24">
           <div>
             <h2 className="text-balance font-serif text-4xl text-foreground leading-[1.05] sm:text-5xl">
               {'One clear scope.'}
               <br />
               {'No hidden surprises.'}
             </h2>
-            <p className="mt-5 max-w-md text-pretty text-muted-foreground leading-8">
+            <p className="mt-5 max-w-sm text-pretty text-muted-foreground leading-8">
               {
-                'We agree on the work before it starts. Explore a sample project size, then we can talk through the features, timeline, and budget for your website or SaaS product.'
+                'We talk, then we write the work down. You approve the page before anything is built.'
               }
             </p>
             <div className="mt-8">
@@ -42,7 +42,7 @@ export function Planning() {
               </a>
             </div>
           </div>
-          <Planner />
+          <Contents />
         </div>
       </section>
     </div>

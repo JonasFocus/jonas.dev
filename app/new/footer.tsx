@@ -34,7 +34,7 @@ export function Footer() {
                 </li>
                 <li>
                   <a
-                    href="#pricing"
+                    href="#planning"
                     className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
                   >
                     {'Project planning'}
@@ -79,7 +79,7 @@ export function Footer() {
                 </li>
                 <li>
                   <a
-                    href="#pricing"
+                    href="#planning"
                     className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
                   >
                     {'Planning'}

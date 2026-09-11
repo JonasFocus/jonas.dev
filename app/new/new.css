@@ -139,72 +139,100 @@
   border: 1px solid var(--border);
   border-radius: 50%;
 }
-.meridian-page .project-planner {
-  padding: 40px;
-  background:
-    radial-gradient(ellipse at 12% 0%, #f5f7f9 0%, transparent 65%),
-    linear-gradient(145deg, #dce4e9 0%, #b9ccd7 55%, #8eaabd 100%);
-  box-shadow:
-    inset 0 1px 0 #ffffff80,
-    inset 0 0 0 1px #ffffff26;
-  border-radius: 32px;
-  color: #172b50;
+.meridian-page .engagement-contents {
+  width: min(100%, 26rem);
+  justify-self: end;
+  padding-block: 0.5rem;
 }
-.meridian-page .planner-rule {
+.meridian-page .engagement-kicker {
+  margin: 0 0 2rem;
+  color: var(--muted-foreground);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.meridian-page .engagement-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.meridian-page .engagement-item {
+  display: grid;
+  grid-template-columns: max-content minmax(1.5rem, 1fr) max-content;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding-block: 0.85rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .meridian-page .new-reveal:not(.entered) .engagement-item {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .meridian-page .new-reveal.entered .engagement-item {
+    animation: engagement-in 0.7s cubic-bezier(0.23, 1, 0.32, 1) both;
+    animation-delay: calc(var(--i) * 70ms + 80ms);
+  }
+  .meridian-page .new-reveal.entered .engagement-leaders {
+    transform-origin: left center;
+    animation: engagement-leaders 0.9s cubic-bezier(0.23, 1, 0.32, 1) both;
+    animation-delay: calc(var(--i) * 70ms + 160ms);
+  }
+}
+.meridian-page .engagement-title {
+  color: var(--foreground);
+  font-family: var(--font-fraunces), Fraunces, Georgia, serif;
+  font-size: clamp(1.85rem, 3.2vw, 2.35rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.meridian-page .engagement-leaders {
+  display: block;
+  min-width: 1.5rem;
   height: 1px;
-  background: #172b5018;
-  margin-top: 20px;
+  margin-bottom: 0.22em;
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--foreground) 32%, transparent) 0.55px,
+    transparent 0.6px
+  );
+  background-position: center;
+  background-repeat: repeat-x;
+  background-size: 5px 1px;
 }
-.meridian-page .planner-number {
-  display: block;
-  font:
-    500 48px/1.2 'JetBrains Mono',
-    monospace;
-  margin-top: 8px;
+.meridian-page .engagement-num {
+  color: color-mix(in srgb, var(--foreground) 55%, var(--muted-foreground));
+  font-family: var(--font-jetbrains-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
 }
-.meridian-page .planner-number small {
-  font-size: 20px;
+.meridian-page .engagement-note {
+  margin: 1.75rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  line-height: 1.6;
 }
-.meridian-page .planner-estimate {
-  display: block;
-  font:
-    500 36px/1.2 'JetBrains Mono',
-    monospace;
-  margin-top: 8px;
+@keyframes engagement-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
-.meridian-page .planner-estimate small {
-  font-size: 20px;
-}
-.meridian-page input[type='range'] {
-  appearance: none;
-  display: block;
-  width: 100%;
-  height: 40px;
-  background: #172b5018;
-  border-radius: 8px;
-  margin-top: 20px;
-  cursor: ew-resize;
-  padding: 0 8px;
-}
-.meridian-page input[type='range']::-webkit-slider-thumb {
-  appearance: none;
-  width: 6px;
-  height: 20px;
-  border-radius: 4px;
-  background: #172b50;
-}
-.meridian-page input[type='range']::-moz-range-thumb {
-  width: 6px;
-  height: 20px;
-  border: 0;
-  border-radius: 4px;
-  background: #172b50;
-}
-.meridian-page .planner-note {
-  font-size: 11px;
-  line-height: 1.5;
-  margin-top: 20px;
-  opacity: 0.72;
+@keyframes engagement-leaders {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
 }
 .meridian-page .faq-entry {
   background: var(--card);
@@ -286,15 +314,10 @@
     transform: none;
   }
 }
-@media (max-width: 639px) {
-  .meridian-page .project-planner {
-    padding: 32px;
-  }
-  .meridian-page .planner-number {
-    font-size: 40px;
-  }
-  .meridian-page .planner-estimate {
-    font-size: 28px;
+@media (max-width: 1023px) {
+  .meridian-page .engagement-contents {
+    justify-self: start;
+    width: min(100%, 24rem);
   }
 }
 @media (prefers-reduced-motion: reduce) {
