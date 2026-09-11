@@ -142,17 +142,17 @@
 .meridian-page .scope-folio {
   position: relative;
   overflow: hidden;
-  min-height: 28rem;
   border-radius: 1.75rem;
   border: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent);
 }
 .meridian-page .scope-folio-sheet {
-  position: absolute;
-  inset: 1.25rem;
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
+  min-height: 24.5rem;
+  margin: 1.25rem;
   padding: 1.5rem 1.45rem 1.25rem;
-  overflow: hidden;
   border-radius: 1.4rem;
   border: 1px solid color-mix(in oklch, var(--foreground) 14%, transparent);
   background: color-mix(in oklch, var(--background) 88%, transparent);
@@ -292,11 +292,9 @@
   }
 }
 @media (max-width: 639px) {
-  .meridian-page .scope-folio {
-    min-height: 26rem;
-  }
   .meridian-page .scope-folio-sheet {
-    inset: 1rem;
+    min-height: 0;
+    margin: 1rem;
     padding: 1.25rem 1.15rem 1.1rem;
   }
 }
