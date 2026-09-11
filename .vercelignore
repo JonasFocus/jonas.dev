@@ -1,0 +1,14 @@
+/work
+/outputs
+/.env*
+/.git
+/.github
+/tests
+/scripts
+/supabase
+/docs
+/septemberstrategy.md
+/design-qa.md
+/AGENTS.md
+/CLAUDE.md
+/playwright.config.ts

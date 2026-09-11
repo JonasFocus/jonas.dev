@@ -1,20 +1,74 @@
-# Jonas personal website
+# Jonas website and private admin
 
-A dark portfolio and services website for an independent engineer. Built with React, TypeScript, and Vinext.
+Next.js 16, TypeScript, Supabase Postgres/Auth. The public website accepts project inquiries; the owner manages requests, customers, internal notes and follow-ups at `/admin`. Customer email is contact data only. The application sends no email.
 
-## Run locally
+## Development
 
-Install dependencies with `npm ci`, then run `npm run dev`. Open the local URL printed by the server.
+Use Node.js 24 or newer. Run `npm ci`, copy `.env.example` to `.env.local`, configure the dedicated Supabase project, then run `npm run dev`. The website runs at `http://localhost:3000`; `/new` permanently redirects to `/`.
 
-Run `npm run build` for the production build. Run `npx tsc --noEmit` and `npm run lint` to check the application. Lint covers application code and configuration; the unchanged generated component catalog is excluded.
+The website and login render without Supabase configuration, but saving requests and signing in are unavailable until configured. There is no mock database or public admin bypass.
 
-## Replace preview content
+## Database and owner setup
 
-- `app/page.tsx` contains the page copy, service descriptions, FAQs, and concept projects.
-- The contact dialog is an intentional placeholder. Replace it with a verified email address or booking link before public launch. It collects and sends no information.
-- Forma and Orbit are clearly labeled fictional concepts. Replace them with approved work examples before presenting them as client projects.
-- Review the proposed service inclusions and support wording before public launch. No prices or delivery timelines have been promised.
-- `app/globals.css` contains the visual theme, responsive layouts, and motion. Reduced-motion preferences disable animations and smooth scrolling.
-- `public/images/atmosphere.webp` is original generated artwork used in the hero.
+Apply `supabase/migrations/202609110001_crm.sql` to the dedicated project's database. It creates customer/request/note/follow-up/activity tables, owner membership, database policies, durable intake rate limits and atomic submission/customer-conversion functions.
 
-The site starts with private access on Sites. Its project identifier is recorded in `.openai/hosting.json`.
+Disable public signup and anonymous accounts in Supabase. Set `OWNER_EMAIL` alongside the Supabase configuration, then run:
+
+```sh
+node --env-file=.env.local scripts/provision-owner.mjs
+```
+
+This explicitly confirms the owner account through the trusted admin API; it does not send email. The one-time recovery password is saved to `work/owner-recovery.json` with restricted permissions. Store it in your password manager, remove the file and set the printed user ID as `ADMIN_USER_ID`. The script never replaces an existing owner. It saves recovery credentials before remote account creation and can resume an interrupted setup.
+
+Sign in with the owner password, then enroll passkeys in `/admin/security`. Supabase passkeys are experimental and require explicit provider configuration. Configure the stable production RP ID and allowed origin before enrolling production credentials. Keep a recovery password and a second passkey. There are no email password-reset flows.
+
+## Environment
+
+Required configuration is documented in `.env.example`:
+
+- Public Supabase URL and publishable key.
+- Server-only Supabase secret key and owner UUID.
+- Exact `APP_URL` origin for request-origin checking.
+- Random 32+ character `INTAKE_HASH_SECRET` for abuse-protection hashes.
+- Optional external booking URL. Without it, visitors can still request a walkthrough through the inquiry form.
+
+Use independent preview/production databases and secrets. Never expose the Supabase secret key to browser code. No email provider is required.
+
+## Verification
+
+```sh
+npm run lint
+npm run typecheck
+npm test
+npm run build
+npm audit --omit=dev
+```
+
+The GitHub verification workflow runs lint, types, database tests, build, and the production dependency audit on pull requests.
+
+`npm test` executes validation and real Postgres SQL/RLS tests through PGlite. These tests cover anonymous/non-owner denial, retries, rate limits, status changes, notes, follow-ups and idempotent customer conversion.
+
+`npm run test:e2e` runs the actual website → API → database → owner admin workflow. It requires a running configured app and `E2E_OWNER_EMAIL`, `E2E_OWNER_PASSWORD`, `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Optionally set `E2E_BASE_URL`. It creates and cleans up fictional records. Run only against an explicitly selected test environment.
+
+The browser test fails when configuration is missing; it does not silently skip or mock successful storage/auth.
+
+## Deployment
+
+Deploy the Next.js app to Vercel, configure environment variables per environment, apply the database migration, provision the owner and verify `/api/health`. That endpoint checks basic configuration and owner membership; it is not a substitute for testing public intake and authenticated access.
+
+Complete every gate in `docs/production-checklist.md` before production promotion, including domain, real auth, backup restore, noindex admin pages, mobile/keyboard checks and rollback. Do not infer deployment completion from a successful local build.
+
+## Structure
+
+- `app/new/home.tsx` and related components: public page, reused at `/`.
+- `components/inquiry-form.tsx`: accessible inquiry form and dialog.
+- `app/api/requests`: bounded validation and rate-limited persistence.
+- `app/admin`: private dashboard, inbox, customers, notes, follow-ups and login.
+- `lib/crm`: authorization, queries, mutations and boundary validation.
+- `lib/supabase`: server/browser session clients; privileged intake client stays server-only.
+- `supabase/migrations`: reproducible schema and permissions.
+- `tests`: database and browser verification.
+
+## Design assets
+
+The older custom sections are retained from the existing redesign. The component catalog's private registry uses an environment-variable reference, never an embedded token. No registry token is required to run the site. Concepts and illustrative data remain labeled; replace them with approved work when available.
