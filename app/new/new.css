@@ -139,72 +139,77 @@
   border: 1px solid var(--border);
   border-radius: 50%;
 }
-.meridian-page .project-planner {
-  padding: 40px;
-  background:
-    radial-gradient(ellipse at 12% 0%, #f5f7f9 0%, transparent 65%),
-    linear-gradient(145deg, #dce4e9 0%, #b9ccd7 55%, #8eaabd 100%);
-  box-shadow:
-    inset 0 1px 0 #ffffff80,
-    inset 0 0 0 1px #ffffff26;
-  border-radius: 32px;
-  color: #172b50;
+.meridian-page .scope-folio {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.75rem;
+  border: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent);
 }
-.meridian-page .planner-rule {
-  height: 1px;
-  background: #172b5018;
-  margin-top: 20px;
+.meridian-page .scope-folio-sheet {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 24.5rem;
+  margin: 1.25rem;
+  padding: 1.5rem 1.45rem 1.25rem;
+  border-radius: 1.4rem;
+  border: 1px solid color-mix(in oklch, var(--foreground) 14%, transparent);
+  background: color-mix(in oklch, var(--background) 88%, transparent);
+  box-shadow: 0 24px 64px -40px color-mix(in oklch, var(--foreground) 40%, transparent);
+  backdrop-filter: blur(22px);
+  color: var(--foreground);
 }
-.meridian-page .planner-number {
-  display: block;
-  font:
-    500 48px/1.2 'JetBrains Mono',
-    monospace;
-  margin-top: 8px;
+.meridian-page .scope-folio-lede {
+  margin-top: 1.25rem;
+  padding-bottom: 1.15rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
 }
-.meridian-page .planner-number small {
-  font-size: 20px;
+.meridian-page .scope-folio-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin: 0.35rem 0 0;
+  padding: 0;
+  list-style: none;
 }
-.meridian-page .planner-estimate {
-  display: block;
-  font:
-    500 36px/1.2 'JetBrains Mono',
-    monospace;
-  margin-top: 8px;
+.meridian-page .scope-folio-list li {
+  display: grid;
+  grid-template-columns: 1.75rem 1fr;
+  gap: 0.85rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid color-mix(in oklch, var(--foreground) 8%, transparent);
 }
-.meridian-page .planner-estimate small {
-  font-size: 20px;
+.meridian-page .scope-folio-list li:last-child {
+  border-bottom: 0;
 }
-.meridian-page input[type='range'] {
-  appearance: none;
-  display: block;
-  width: 100%;
-  height: 40px;
-  background: #172b5018;
-  border-radius: 8px;
-  margin-top: 20px;
-  cursor: ew-resize;
-  padding: 0 8px;
+.meridian-page .scope-folio-index {
+  padding-top: 0.15rem;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: #c4b38a;
 }
-.meridian-page input[type='range']::-webkit-slider-thumb {
-  appearance: none;
-  width: 6px;
-  height: 20px;
-  border-radius: 4px;
-  background: #172b50;
+.meridian-page .scope-folio-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding: 0.8rem 0.95rem;
+  border-radius: 0.85rem;
+  background: var(--foreground);
+  color: var(--background);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
-.meridian-page input[type='range']::-moz-range-thumb {
-  width: 6px;
-  height: 20px;
-  border: 0;
-  border-radius: 4px;
-  background: #172b50;
-}
-.meridian-page .planner-note {
-  font-size: 11px;
-  line-height: 1.5;
-  margin-top: 20px;
-  opacity: 0.72;
+.meridian-page .scope-folio-foot span:last-child {
+  color: color-mix(in oklch, var(--background) 62%, transparent);
 }
 .meridian-page .faq-entry {
   background: var(--card);
@@ -287,14 +292,10 @@
   }
 }
 @media (max-width: 639px) {
-  .meridian-page .project-planner {
-    padding: 32px;
-  }
-  .meridian-page .planner-number {
-    font-size: 40px;
-  }
-  .meridian-page .planner-estimate {
-    font-size: 28px;
+  .meridian-page .scope-folio-sheet {
+    min-height: 0;
+    margin: 1rem;
+    padding: 1.25rem 1.15rem 1.1rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {
