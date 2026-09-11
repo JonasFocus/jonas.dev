@@ -583,45 +583,100 @@ html:has(.meridian-page) {
   cursor: not-allowed;
 }
 .meridian-page .newsletter-card .newsletter-status { font-size: 12px; }
-.meridian-page .early-bird-section { padding: 16px 32px 64px; }
-.meridian-page .early-bird-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 32px;
-  max-width: 1152px;
-  margin-inline: auto;
-  padding: 48px;
-  background: #c6d3bd;
-  color: #28352b;
-  border-radius: 28px;
+.meridian-page .early-bird-section {
+  padding: 16px 32px 56px;
 }
-.meridian-page .early-bird-card .newsletter-eyebrow { color: #45533e; }
+.meridian-page .early-bird-card {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  align-items: center;
+  gap: 40px;
+  max-width: 960px;
+  margin-inline: auto;
+  padding: 30px 32px;
+  background: oklch(0.205 0.006 150);
+  color: oklch(0.92 0.008 110);
+  border-radius: 18px;
+  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.07);
+}
+.meridian-page .early-bird-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: oklch(0.79 0.028 135);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+.meridian-page .early-bird-eyebrow::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
 .meridian-page .early-bird-card h2 {
-  margin-block: 16px;
+  margin-block: 10px;
   font-family: var(--font-editorial), Georgia, serif;
   font-weight: 400;
   font-synthesis: none;
-  font-variant-numeric: lining-nums;
-  font-size: clamp(36px, 4vw, 56px);
-  line-height: 1.12;
-  letter-spacing: -.025em;
+  font-size: clamp(26px, 2.6vw, 32px);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
 }
-.meridian-page .early-bird-card p { max-width: 38ch; text-wrap: pretty; }
-.meridian-page .early-bird-details { margin-top: 12px; font-size: 13px; }
-.meridian-page .early-bird-bonus { display: flex; flex-direction: column; align-items: center; }
-.meridian-page .early-bird-number { font-size: 96px; line-height: 1; letter-spacing: -.07em; }
-.meridian-page .early-bird-bonus a {
-  margin-top: 24px;
-  padding: 12px 20px;
-  border-radius: 999px;
-  background: #28352b;
-  color: #f4f6ef;
+.meridian-page .early-bird-card p {
+  color: oklch(0.78 0.006 150);
   font-size: 14px;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+.meridian-page .early-bird-card .early-bird-details {
+  margin-top: 8px;
+  color: oklch(0.67 0.006 150);
+  font-size: 12px;
+}
+.meridian-page .early-bird-months {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+.meridian-page .early-bird-month {
+  display: grid;
+  place-items: center;
+  height: 50px;
+  border-radius: 6px;
+  background: oklch(0.265 0.007 150);
+  color: oklch(0.73 0.008 150);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.meridian-page .early-bird-month.bonus {
+  background: oklch(0.77 0.035 130);
+  color: oklch(0.24 0.025 145);
+}
+.meridian-page .early-bird-legend {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  font-size: 11px;
+  color: oklch(0.73 0.008 150);
+}
+.meridian-page .early-bird-legend span:last-child {
+  color: oklch(0.82 0.025 130);
+}
+@media (max-width: 760px) {
+  .meridian-page .early-bird-section { padding: 16px 16px 40px; }
+  .meridian-page .early-bird-card {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px;
+  }
+  .meridian-page .early-bird-timeline { max-width: 340px; width: 100%; }
 }
 @media (max-width: 640px) {
   .meridian-page .newsletter-card { padding: 20px; }
-  .meridian-page .early-bird-section { padding: 16px 16px 48px; }
-  .meridian-page .early-bird-card { padding: 28px; flex-direction: column; align-items: flex-start; }
-  .meridian-page .early-bird-bonus { align-items: flex-start; }
 }

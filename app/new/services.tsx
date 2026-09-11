@@ -1,3 +1,4 @@
+import { Check, LayoutTemplate, Mail, PanelsTopLeft } from 'lucide-react';
 import Image from 'next/image';
 import { SourceGradient } from './source-gradient';
 
@@ -332,7 +333,7 @@ export function Services() {
                             {'Launch checklist'}
                           </p>
                           <p className="mt-0.5 text-[10px] text-muted-foreground">
-                            {'Checking your project'}
+                            {'Example project review'}
                           </p>
                         </div>
                         <span className="grid size-7 place-items-center rounded-full bg-success text-background">
@@ -355,117 +356,39 @@ export function Services() {
                       </div>
                       <div className="mt-5 border-border border-b pb-4">
                         <p className="text-[10px] text-muted-foreground">
-                          {'Illustrative workspace · Sample data'}
+                          The final review
                         </p>
-                        <div className="mt-1 flex items-end gap-1 font-semibold text-3xl tracking-tight">
-                          <span className="text-lg">{'$'}</span>
-                          <span className="inline-flex items-center tabular-nums text-foreground">
-                            <span className="font-mono">{'128,540'}</span>
-                          </span>
-                          <span className="pb-0.5 text-sm text-muted-foreground">
-                            {'.28'}
-                          </span>
-                        </div>
+                        <p className="mt-2 text-xl font-medium tracking-tight">
+                          Ready for launch.
+                        </p>
                       </div>
-                      <div className="mt-3 flex flex-col gap-1.5">
-                        <div className="flex items-center gap-2.5 rounded-xl px-2 py-2">
-                          <Image
-                            width={24}
-                            height={24}
-                            src="/new/nextjs.svg"
-                            alt=""
-                            aria-hidden="true"
-                            className="size-7 rounded-full object-contain"
-                          />
-                          <span className="flex-1 text-[11px]">
-                            {'Next.js'}
-                          </span>
-                          <span className="font-mono text-[10px] tabular-nums">
-                            {'$61,204'}
-                          </span>
-                          <span className="grid size-4 place-items-center rounded-full bg-success/12 text-success">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2.8"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="lucide lucide-check size-2.5"
-                              aria-hidden="true"
-                            >
-                              <path d="M20 6 9 17l-5-5" />
-                            </svg>
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2.5 rounded-xl px-2 py-2">
-                          <Image
-                            width={24}
-                            height={24}
-                            src="/new/react.svg"
-                            alt=""
-                            aria-hidden="true"
-                            className="size-7 rounded-full object-contain"
-                          />
-                          <span className="flex-1 text-[11px]">{'React'}</span>
-                          <span className="font-mono text-[10px] tabular-nums">
-                            {'$48,930'}
-                          </span>
-                          <span className="grid size-4 place-items-center rounded-full bg-success/12 text-success">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2.8"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="lucide lucide-check size-2.5"
-                              aria-hidden="true"
-                            >
-                              <path d="M20 6 9 17l-5-5" />
-                            </svg>
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2.5 rounded-xl px-2 py-2">
-                          <Image
-                            width={24}
-                            height={24}
-                            src="/new/typescript.svg"
-                            alt=""
-                            aria-hidden="true"
-                            className="size-7 rounded-full object-contain"
-                          />
-                          <span className="flex-1 text-[11px]">
-                            {'TypeScript'}
-                          </span>
-                          <span className="font-mono text-[10px] tabular-nums">
-                            {'$18,406'}
-                          </span>
-                          <span className="grid size-4 place-items-center rounded-full bg-success/12 text-success">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2.8"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="lucide lucide-check size-2.5"
-                              aria-hidden="true"
-                            >
-                              <path d="M20 6 9 17l-5-5" />
-                            </svg>
-                          </span>
-                        </div>
-                      </div>
+                      <ul className="mt-3 flex flex-col gap-1.5">
+                        {[
+                          { label: 'Hero', icon: PanelsTopLeft },
+                          { label: 'Email list', icon: Mail },
+                          { label: 'Landing page', icon: LayoutTemplate },
+                        ].map(({ label, icon: Icon }) => (
+                          <li
+                            key={label}
+                            className="flex items-center gap-2.5 rounded-xl px-2 py-2"
+                          >
+                            <span className="grid size-7 place-items-center rounded-lg bg-muted text-muted-foreground">
+                              <Icon size={15} aria-hidden="true" />
+                            </span>
+                            <span className="flex-1 text-[11px]">{label}</span>
+                            <span className="inline-flex items-center gap-1.5 text-[10px] text-success">
+                              Approved
+                              <span className="grid size-4 place-items-center rounded-full bg-success/12">
+                                <Check
+                                  size={10}
+                                  strokeWidth={2.8}
+                                  aria-hidden="true"
+                                />
+                              </span>
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
                       <div className="mt-auto flex items-center justify-center gap-2 rounded-xl bg-foreground py-2.5 text-background">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -485,7 +408,7 @@ export function Services() {
                           <path d="M7 10V7a5 5 0 0 1 10 0v3" />
                         </svg>
                         <span className="font-medium text-[10px]">
-                          {'Your project is ready'}
+                          {'From idea to launch'}
                         </span>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
