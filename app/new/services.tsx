@@ -1,4 +1,4 @@
-import { Check, LayoutTemplate, Mail, PanelsTopLeft } from 'lucide-react';
+import { Check, Phone, Rocket, Wrench } from 'lucide-react';
 import Image from 'next/image';
 import { SourceGradient } from './source-gradient';
 
@@ -18,7 +18,7 @@ export function Services() {
             </div>
             <p className="text-pretty text-muted-foreground text-sm leading-7 sm:text-base lg:pb-2">
               {
-                'Every detail serves your product and the people using it, from the first page to the everyday workflow.'
+                'A website, a web app, and the pieces that make it a real business tool — then you leave with the keys.'
               }
             </p>
           </div>
@@ -32,10 +32,10 @@ export function Services() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="font-medium text-sm">
-                            {'Project workflow'}
+                            {'What you get'}
                           </p>
                           <p className="mt-0.5 text-[10px] text-muted-foreground">
-                            {'One idea. Two connected parts.'}
+                            {'Site, app, and the working pieces.'}
                           </p>
                         </div>
                         <span className="rounded-full bg-success/12 px-2 py-1 font-medium text-[9px] text-success">
@@ -53,9 +53,9 @@ export function Services() {
                             className="size-6 rounded-full"
                           />
                           <div>
-                            <p className="font-semibold text-xs">{'1.00'}</p>
+                            <p className="font-semibold text-xs">{'Site'}</p>
                             <p className="text-[9px] text-muted-foreground">
-                              {'APP'}
+                              {'LIVE'}
                             </p>
                           </div>
                         </div>
@@ -66,7 +66,7 @@ export function Services() {
                           className="absolute inset-0 size-full overflow-visible text-foreground/45"
                           fill="none"
                         >
-                          <title>{'Design and development workflow'}</title>
+                          <title>{'Site, app, and business pieces'}</title>
                           <path
                             d="M66 70C100 70 104 20 146 20H180"
                             stroke="currentColor"
@@ -87,15 +87,15 @@ export function Services() {
                           />
                         </svg>
                         <div className="absolute z-10 flex w-24 items-center justify-between rounded-xl bg-background px-2.5 py-2 top-1 right-0">
-                          <span className="text-[10px]">{'Design'}</span>
+                          <span className="text-[10px]">{'App'}</span>
                           <span className="font-mono text-[9px] text-muted-foreground">
-                            {'62%'}
+                            {'tools'}
                           </span>
                         </div>
                         <div className="absolute z-10 flex w-24 items-center justify-between rounded-xl bg-background px-2.5 py-2 right-0 bottom-1">
-                          <span className="text-[10px]">{'Build'}</span>
+                          <span className="text-[10px]">{'Pieces'}</span>
                           <span className="font-mono text-[9px] text-muted-foreground">
-                            {'38%'}
+                            {'ops'}
                           </span>
                         </div>
                       </div>
@@ -104,7 +104,7 @@ export function Services() {
                           {'Deliverable'}
                         </span>
                         <span className="font-semibold text-sm tabular-nums">
-                          {'Ready to launch'}
+                          {'A real business tool'}
                         </span>
                       </div>
                     </div>
@@ -112,11 +112,120 @@ export function Services() {
                 </div>
               </div>
               <h3 className="mt-4 font-medium text-foreground text-xl">
-                {'A website that does its job'}
+                {'What you get'}
               </h3>
               <p className="mt-1 text-pretty text-muted-foreground text-sm">
                 {
-                  'Clear design, responsive pages, and a straightforward path from a first visit to an enquiry. Built around your business.'
+                  'A site, an app when you need one, and the pieces that make it a real business tool — forms, data, and the daily workflow.'
+                }
+              </p>
+            </div>
+            <div>
+              <div className="relative h-[26rem] overflow-hidden rounded-2xl">
+                <SourceGradient variant={3} />
+                <div className="absolute inset-0">
+                  <div className="absolute inset-5 overflow-hidden rounded-[1.4rem] border border-border/70 bg-background/90 text-foreground shadow-[0_24px_64px_-40px_color-mix(in_oklch,var(--foreground)_40%,transparent)] backdrop-blur-xl">
+                    <div className="flex h-full flex-col p-4">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <p className="font-medium text-sm">
+                            {'How a project runs'}
+                          </p>
+                          <p className="mt-0.5 text-[10px] text-muted-foreground">
+                            {'First call → build → live'}
+                          </p>
+                        </div>
+                        <span className="grid size-7 place-items-center rounded-full bg-success text-background">
+                          <Check
+                            size={16}
+                            strokeWidth={2.5}
+                            aria-hidden="true"
+                          />
+                        </span>
+                      </div>
+                      <div className="mt-5 border-border border-b pb-4">
+                        <p className="text-[10px] text-muted-foreground">
+                          The path
+                        </p>
+                        <p className="mt-2 text-xl font-medium tracking-tight">
+                          Weeks you can picture.
+                        </p>
+                      </div>
+                      <ul className="mt-3 flex flex-col gap-1.5">
+                        {[
+                          { label: 'First call', week: 'Week 1', icon: Phone },
+                          { label: 'Build', week: 'Weeks 2–4', icon: Wrench },
+                          { label: 'Live', week: 'Week 5+', icon: Rocket },
+                        ].map(({ label, week, icon: Icon }) => (
+                          <li
+                            key={label}
+                            className="flex items-center gap-2.5 rounded-xl px-2 py-2"
+                          >
+                            <span className="grid size-7 place-items-center rounded-lg bg-muted text-muted-foreground">
+                              <Icon size={15} aria-hidden="true" />
+                            </span>
+                            <span className="flex-1 text-[11px]">{label}</span>
+                            <span className="inline-flex items-center gap-1.5 text-[10px] text-success">
+                              {week}
+                              <span className="grid size-4 place-items-center rounded-full bg-success/12">
+                                <Check
+                                  size={10}
+                                  strokeWidth={2.8}
+                                  aria-hidden="true"
+                                />
+                              </span>
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                      <div className="mt-auto flex items-center justify-center gap-2 rounded-xl bg-foreground py-2.5 text-background">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="lucide lucide-lock-keyhole size-3.5"
+                          aria-hidden="true"
+                        >
+                          <circle cx="12" cy="16" r="1" />
+                          <rect x="3" y="10" width="18" height="12" rx="2" />
+                          <path d="M7 10V7a5 5 0 0 1 10 0v3" />
+                        </svg>
+                        <span className="font-medium text-[10px]">
+                          {'From idea to launch'}
+                        </span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="lucide lucide-arrow-down size-3 rotate-[-90deg]"
+                          aria-hidden="true"
+                        >
+                          <path d="M12 5v14" />
+                          <path d="m19 12-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h3 className="mt-4 font-medium text-foreground text-xl">
+                {'How a project runs'}
+              </h3>
+              <p className="mt-1 text-pretty text-muted-foreground text-sm">
+                {
+                  'First call, then build, then live — a path measured in weeks you can picture, with working previews along the way.'
                 }
               </p>
             </div>
@@ -128,7 +237,7 @@ export function Services() {
                     <div className="relative h-full p-4">
                       <div>
                         <p className="font-medium text-sm">
-                          {'Project ownership'}
+                          {'You leave with the keys'}
                         </p>
                         <p className="mt-0.5 text-[10px] text-muted-foreground">
                           {'Your code. Your accounts. Your data.'}
@@ -313,130 +422,11 @@ export function Services() {
                 </div>
               </div>
               <h3 className="mt-4 font-medium text-foreground text-xl">
-                {'Your product, always yours'}
+                {'You leave with the keys'}
               </h3>
               <p className="mt-1 text-pretty text-muted-foreground text-sm">
                 {
-                  'Your code, accounts, and data belong to you. We build custom SaaS and web apps with a clear handover and room to grow.'
-                }
-              </p>
-            </div>
-            <div>
-              <div className="relative h-[26rem] overflow-hidden rounded-2xl">
-                <SourceGradient variant={3} />
-                <div className="absolute inset-0">
-                  <div className="absolute inset-5 overflow-hidden rounded-[1.4rem] border border-border/70 bg-background/90 text-foreground shadow-[0_24px_64px_-40px_color-mix(in_oklch,var(--foreground)_40%,transparent)] backdrop-blur-xl">
-                    <div className="flex h-full flex-col p-4">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <p className="font-medium text-sm">
-                            {'Launch checklist'}
-                          </p>
-                          <p className="mt-0.5 text-[10px] text-muted-foreground">
-                            {'Example project review'}
-                          </p>
-                        </div>
-                        <span className="grid size-7 place-items-center rounded-full bg-success text-background">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="lucide lucide-check size-4"
-                            aria-hidden="true"
-                          >
-                            <path d="M20 6 9 17l-5-5" />
-                          </svg>
-                        </span>
-                      </div>
-                      <div className="mt-5 border-border border-b pb-4">
-                        <p className="text-[10px] text-muted-foreground">
-                          The final review
-                        </p>
-                        <p className="mt-2 text-xl font-medium tracking-tight">
-                          Ready for launch.
-                        </p>
-                      </div>
-                      <ul className="mt-3 flex flex-col gap-1.5">
-                        {[
-                          { label: 'Hero', icon: PanelsTopLeft },
-                          { label: 'Email list', icon: Mail },
-                          { label: 'Landing page', icon: LayoutTemplate },
-                        ].map(({ label, icon: Icon }) => (
-                          <li
-                            key={label}
-                            className="flex items-center gap-2.5 rounded-xl px-2 py-2"
-                          >
-                            <span className="grid size-7 place-items-center rounded-lg bg-muted text-muted-foreground">
-                              <Icon size={15} aria-hidden="true" />
-                            </span>
-                            <span className="flex-1 text-[11px]">{label}</span>
-                            <span className="inline-flex items-center gap-1.5 text-[10px] text-success">
-                              Approved
-                              <span className="grid size-4 place-items-center rounded-full bg-success/12">
-                                <Check
-                                  size={10}
-                                  strokeWidth={2.8}
-                                  aria-hidden="true"
-                                />
-                              </span>
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                      <div className="mt-auto flex items-center justify-center gap-2 rounded-xl bg-foreground py-2.5 text-background">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="lucide lucide-lock-keyhole size-3.5"
-                          aria-hidden="true"
-                        >
-                          <circle cx="12" cy="16" r="1" />
-                          <rect x="3" y="10" width="18" height="12" rx="2" />
-                          <path d="M7 10V7a5 5 0 0 1 10 0v3" />
-                        </svg>
-                        <span className="font-medium text-[10px]">
-                          {'From idea to launch'}
-                        </span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="lucide lucide-arrow-down size-3 rotate-[-90deg]"
-                          aria-hidden="true"
-                        >
-                          <path d="M12 5v14" />
-                          <path d="m19 12-7 7-7-7" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <h3 className="mt-4 font-medium text-foreground text-xl">
-                {'From first sketch to launch'}
-              </h3>
-              <p className="mt-1 text-pretty text-muted-foreground text-sm">
-                {
-                  'Plan the important features, review working previews, and launch with confidence. You work with the person building it.'
+                  'Code, accounts, and data stay in your name. You can run it, move it, or take it to another developer.'
                 }
               </p>
             </div>
