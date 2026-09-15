@@ -1,6 +1,14 @@
+import { Check } from 'lucide-react';
 import Image from 'next/image';
 import { SourceGradient } from './source-gradient';
 import { ReviewPill } from './review-pill';
+
+const deliverySteps = [
+  { label: 'Draft sent for signing', state: 'done' as const, version: '1.0' },
+  { label: 'Revisions received', state: 'check' as const, version: null },
+  { label: 'Sent back', state: 'current' as const, version: '1.1' },
+  { label: 'Both parties confirmed', state: 'waiting' as const, version: null },
+];
 
 export function Hero() {
   return (
@@ -708,137 +716,59 @@ export function Hero() {
                           </div>
                         </div>
                       </div>
-                      <div className="mt-4 rounded-xl border border-border/60">
-                        <div className="flex items-center justify-between px-3 py-2.5">
-                          <span className="font-medium text-foreground text-xs">
-                            {'Product overview'}
+                      <div className="mt-4 rounded-xl border border-border/60 bg-card">
+                        <div className="flex items-center gap-2 px-3 py-2.5 sm:px-3.5">
+                          <span className="font-sans font-medium text-foreground text-xs">
+                            {'Delivery'}
                           </span>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="lucide lucide-chevron-right size-3.5 text-muted-foreground"
-                            aria-hidden="true"
-                          >
-                            <path d="m9 18 6-6-6-6" />
-                          </svg>
+                          <span className="rounded-md bg-foreground/[0.06] px-1.5 py-px font-mono text-[10px] text-muted-foreground tabular-nums">
+                            {'v1.1'}
+                          </span>
                         </div>
-                        <div className="divide-y divide-border/50">
-                          <div className="grid grid-cols-[1fr_auto] items-center gap-x-3 px-3 py-2 text-xs">
-                            <span className="flex min-w-0 items-center gap-2">
-                              <Image
-                                width={24}
-                                height={24}
-                                src="/new/nextjs.svg"
-                                alt=""
-                                aria-hidden="true"
-                                className="size-6 shrink-0 rounded-full object-contain"
-                              />
-                              <span className="truncate font-medium text-foreground">
-                                {'Next.js'}
+                        <ol className="flex flex-col border-border/60 border-t px-3 py-1.5 sm:px-3.5">
+                          {deliverySteps.map((step) => (
+                            <li
+                              key={step.label}
+                              className="flex items-start gap-2.5 py-1.5 text-left"
+                            >
+                              <span
+                                className={
+                                  step.state === 'current'
+                                    ? 'grid size-6 shrink-0 place-items-center rounded-full bg-[#4d8dff]/18 font-mono text-[10px] text-foreground tabular-nums leading-none'
+                                    : step.state === 'check'
+                                      ? 'grid size-6 shrink-0 place-items-center rounded-full bg-success/12'
+                                      : 'grid size-6 shrink-0 place-items-center rounded-full bg-foreground/[0.06] font-mono text-[10px] text-muted-foreground tabular-nums leading-none'
+                                }
+                              >
+                                {step.state === 'check' ? (
+                                  <Check
+                                    size={12}
+                                    strokeWidth={2.25}
+                                    aria-hidden="true"
+                                    className="text-success"
+                                  />
+                                ) : step.state === 'waiting' ? (
+                                  <span
+                                    aria-hidden="true"
+                                    className="size-1.5 rounded-full"
+                                    style={{ backgroundColor: 'var(--warning)' }}
+                                  />
+                                ) : (
+                                  step.version
+                                )}
                               </span>
-                              <span className="hidden text-muted-foreground sm:inline">
-                                {'Website'}
+                              <span
+                                className={
+                                  step.state === 'waiting'
+                                    ? 'min-w-0 text-pretty font-sans font-medium text-muted-foreground text-xs leading-6'
+                                    : 'min-w-0 text-pretty font-sans font-medium text-foreground text-xs leading-6'
+                                }
+                              >
+                                {step.label}
                               </span>
-                            </span>
-                            <span className="whitespace-nowrap text-right">
-                              <span className="font-mono text-foreground tabular-nums">
-                                {'$'}
-                                {'61,204'}
-                              </span>
-                              <span className="ml-2 tabular-nums text-success">
-                                {'+3.8%'}
-                              </span>
-                            </span>
-                          </div>
-                          <div className="grid grid-cols-[1fr_auto] items-center gap-x-3 px-3 py-2 text-xs">
-                            <span className="flex min-w-0 items-center gap-2">
-                              <Image
-                                width={24}
-                                height={24}
-                                src="/new/react.svg"
-                                alt=""
-                                aria-hidden="true"
-                                className="size-6 shrink-0 rounded-full object-contain"
-                              />
-                              <span className="truncate font-medium text-foreground">
-                                {'React'}
-                              </span>
-                              <span className="hidden text-muted-foreground sm:inline">
-                                {'Application'}
-                              </span>
-                            </span>
-                            <span className="whitespace-nowrap text-right">
-                              <span className="font-mono text-foreground tabular-nums">
-                                {'$'}
-                                {'48,930'}
-                              </span>
-                              <span className="ml-2 tabular-nums text-success">
-                                {'+6.1%'}
-                              </span>
-                            </span>
-                          </div>
-                          <div className="grid grid-cols-[1fr_auto] items-center gap-x-3 px-3 py-2 text-xs">
-                            <span className="flex min-w-0 items-center gap-2">
-                              <Image
-                                width={24}
-                                height={24}
-                                src="/new/typescript.svg"
-                                alt=""
-                                aria-hidden="true"
-                                className="size-6 shrink-0 rounded-full object-contain"
-                              />
-                              <span className="truncate font-medium text-foreground">
-                                {'TypeScript'}
-                              </span>
-                              <span className="hidden text-muted-foreground sm:inline">
-                                {'Platform'}
-                              </span>
-                            </span>
-                            <span className="whitespace-nowrap text-right">
-                              <span className="font-mono text-foreground tabular-nums">
-                                {'$'}
-                                {'18,406'}
-                              </span>
-                              <span className="ml-2 tabular-nums text-success">
-                                {'0.0%'}
-                              </span>
-                            </span>
-                          </div>
-                          <div className="grid grid-cols-[1fr_auto] items-center gap-x-3 px-3 py-2 text-xs">
-                            <span className="flex min-w-0 items-center gap-2">
-                              <Image
-                                width={24}
-                                height={24}
-                                src="/new/github.svg"
-                                alt=""
-                                aria-hidden="true"
-                                className="size-6 shrink-0 rounded-full object-contain"
-                              />
-                              <span className="truncate font-medium text-foreground">
-                                {'GitHub'}
-                              </span>
-                              <span className="hidden text-muted-foreground sm:inline">
-                                {'Repository'}
-                              </span>
-                            </span>
-                            <span className="whitespace-nowrap text-right">
-                              <span className="font-mono text-foreground tabular-nums">
-                                {'$'}
-                                {'14,880'}
-                              </span>
-                              <span className="ml-2 tabular-nums text-destructive">
-                                {'-1.2%'}
-                              </span>
-                            </span>
-                          </div>
-                        </div>
+                            </li>
+                          ))}
+                        </ol>
                       </div>
                       <p className="mt-4 mb-2 font-medium text-foreground text-xs">
                         {'Recent activity'}
