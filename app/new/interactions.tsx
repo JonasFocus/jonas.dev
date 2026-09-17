@@ -71,12 +71,20 @@ const menus = {
     ['Custom web apps', 'A better way to get your daily work done', '#product'],
   ],
   Explore: [
-    ['How we work', 'Working together, from first sketch to launch', '#security'],
+    [
+      'How we work',
+      'Working together, from first sketch to launch',
+      '#security',
+    ],
     ['Technology', 'A practical stack for your product', '#ecosystem'],
     ['Common questions', 'A few things to know before we begin', '#support'],
   ],
 };
-export function Header() {
+export function Header({
+  newsletterEnabled = false,
+}: {
+  newsletterEnabled?: boolean;
+}) {
   const [mobile, setMobile] = useState(false);
   const [active, setActive] = useState<string | null>(null);
   const ref = useRef<HTMLElement>(null);
@@ -165,15 +173,20 @@ export function Header() {
             </a>
           </nav>
           <div className="flex items-center gap-2">
-            <a className="new-button ghost hidden sm:inline-flex" href="#product">
+            <a
+              className="new-button ghost hidden sm:inline-flex"
+              href="#product"
+            >
               See our work
             </a>
-            <a
-              className="new-button primary hidden sm:inline-flex"
-              href="#newsletter"
-            >
-              Newsletter
-            </a>
+            {newsletterEnabled && (
+              <a
+                className="new-button primary hidden sm:inline-flex"
+                href="#newsletter"
+              >
+                Newsletter
+              </a>
+            )}
             <button
               className="grid size-9 place-items-center lg:hidden"
               aria-label={mobile ? 'Close menu' : 'Open menu'}
@@ -220,13 +233,15 @@ export function Header() {
             >
               About Jonas
             </a>
-            <a
-              className="new-button primary"
-              href="#newsletter"
-              onClick={() => setMobile(false)}
-            >
-              Newsletter
-            </a>
+            {newsletterEnabled && (
+              <a
+                className="new-button primary"
+                href="#newsletter"
+                onClick={() => setMobile(false)}
+              >
+                Newsletter
+              </a>
+            )}
           </div>
         )}
       </header>

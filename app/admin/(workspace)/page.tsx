@@ -1,8 +1,13 @@
+import { getOwnerNewsletterEnabled } from '@/lib/homepage-settings';
+import { AdminForm } from '../forms';
 import Link from 'next/link';
 import { getDashboard } from '@/lib/crm/queries';
 import { Heading, RequestList } from '../shared';
 export default async function Dashboard() {
-  const data = await getDashboard();
+  const [data, newsletterEnabled] = await Promise.all([
+    getDashboard(),
+    getOwnerNewsletterEnabled(),
+  ]);
   return (
     <>
       <section className="admin-feature">
@@ -27,6 +32,32 @@ export default async function Dashboard() {
             </Link>
           </div>
         </div>
+      </section>
+      <section
+        className="admin-panel admin-padded"
+        aria-labelledby="newsletter-setting-title"
+      >
+        <div className="admin-section-heading">
+          <h2 id="newsletter-setting-title">Homepage newsletter</h2>
+          <span className="admin-badge">
+            {newsletterEnabled ? 'Visible' : 'Hidden'}
+          </span>
+        </div>
+        <p className="admin-muted">
+          Show or hide the newsletter section and its navigation links. Signups
+          remain closed until the newsletter is ready.
+        </p>
+        <AdminForm
+          operation="newsletter"
+          id="homepage"
+          label={newsletterEnabled ? 'Hide newsletter' : 'Show newsletter'}
+        >
+          <input
+            type="hidden"
+            name="enabled"
+            value={String(!newsletterEnabled)}
+          />
+        </AdminForm>
       </section>
       <section className="admin-panel admin-recent">
         <div className="admin-section-heading">

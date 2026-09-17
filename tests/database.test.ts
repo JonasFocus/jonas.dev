@@ -221,3 +221,45 @@ test('stores every service selection and preserves legacy submissions', async ()
     await assert.rejects(() => submit(invalid));
   }
 });
+
+test('newsletter defaults hidden and only the owner can change visibility', async () => {
+  const read = async () =>
+    (
+      await db.query<{ newsletter_enabled: boolean }>(
+        'select newsletter_enabled from public.homepage_settings where id=true',
+      )
+    ).rows[0].newsletter_enabled;
+  assert.equal(await read(), false);
+  await db.exec('set role anon');
+  try {
+    assert.equal(await read(), false);
+    await assert.rejects(() =>
+      db.exec(
+        'update public.homepage_settings set newsletter_enabled=true where id=true',
+      ),
+    );
+    await assert.rejects(() => db.exec('delete from public.homepage_settings'));
+  } finally {
+    await db.exec('reset role');
+  }
+  await asUser(stranger, async () => {
+    await db.exec(
+      'update public.homepage_settings set newsletter_enabled=true where id=true',
+    );
+    assert.equal(await read(), false);
+  });
+  for (let pass = 0; pass < 2; pass++) {
+    await asUser(owner, () =>
+      db.exec(
+        'update public.homepage_settings set newsletter_enabled=true where id=true',
+      ),
+    );
+    assert.equal(await read(), true);
+    await asUser(owner, () =>
+      db.exec(
+        'update public.homepage_settings set newsletter_enabled=false where id=true',
+      ),
+    );
+    assert.equal(await read(), false);
+  }
+});

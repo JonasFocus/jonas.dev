@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { unstable_rethrow } from 'next/navigation';
+import { setNewsletterEnabled } from '@/lib/homepage-settings';
 import * as crm from '@/lib/crm/mutations';
 
 export type ActionState = { error?: string; success?: string };
@@ -16,6 +17,10 @@ export async function saveAdminAction(
   };
   try {
     switch (value('operation')) {
+      case 'newsletter':
+        await setNewsletterEnabled(value('enabled'));
+        revalidatePath('/');
+        break;
       case 'status':
         await crm.updateRequest({ id: value('id'), status: value('status') });
         break;

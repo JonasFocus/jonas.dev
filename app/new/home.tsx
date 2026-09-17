@@ -1,3 +1,5 @@
+import { connection } from 'next/server';
+import { getNewsletterEnabled } from '@/lib/homepage-settings';
 import { Pricing } from './pricing';
 import { Newsletter } from './newsletter';
 import { Hero } from './hero';
@@ -11,15 +13,19 @@ import { PageShell, Header, Faq } from './interactions';
 import './reference.css';
 import './new.css';
 
-export default function HomePage() {
+export default async function HomePage() {
+  await connection();
+  const newsletterEnabled = await getNewsletterEnabled();
   return (
     <PageShell>
-      <Header />
+      <Header newsletterEnabled={newsletterEnabled} />
       <main className="flex-1">
         <Hero />
-        <div className="newsletter-section">
-          <Newsletter />
-        </div>
+        {newsletterEnabled && (
+          <div className="newsletter-section">
+            <Newsletter />
+          </div>
+        )}
         <Pricing />
         <Technology />
         <Services />
