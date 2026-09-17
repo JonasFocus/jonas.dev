@@ -19,8 +19,10 @@ export default async function RequestDetail({
       </Link>
       <header className="admin-heading">
         <p className="admin-eyebrow">
-          {request.service.replaceAll('-', ' ')} ·{' '}
-          <DateLabel value={request.created_at} />
+          {(request.services ?? [request.service])
+            .map((service) => service.replaceAll('-', ' '))
+            .join(' · ')}{' '}
+          · <DateLabel value={request.created_at} />
         </p>
         <h1>{request.name}</h1>
         <p>{request.company || 'Individual inquiry'}</p>

@@ -61,7 +61,13 @@ export async function POST(request: Request) {
   const { website, submissionId, ...content } = parsed.data;
   void website;
   const fingerprint = createHash('sha256')
-    .update(JSON.stringify(content))
+    .update(
+      JSON.stringify({
+        ...content,
+        service:
+          content.service.length === 1 ? content.service[0] : content.service,
+      }),
+    )
     .digest('hex');
   // Vercel overwrites this header at the edge; do not trust arbitrary forwarded headers.
   const ip = process.env.VERCEL
@@ -76,7 +82,12 @@ export async function POST(request: Request) {
     createHmac('sha256', secret).update(value).digest('hex');
   try {
     const { data, error } = await createIntakeClient().rpc('submit_request', {
-      p_input: { ...content, submissionId },
+      p_input: {
+        ...content,
+        submissionId,
+        service: content.service[0],
+        services: content.service,
+      },
       p_fingerprint: fingerprint,
       p_ip_key: hash(`ip:${ip}`),
       p_email_key: hash(`email:${content.email}`),

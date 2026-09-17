@@ -11,7 +11,7 @@ import {
 } from './validation';
 
 const requestColumns =
-  'id,created_at,name,email,company,service,description,budget,timeline,case_study,status,read_at,customer_id';
+  'id,created_at,name,email,company,service,services,description,budget,timeline,case_study,status,read_at,customer_id';
 function searchTerm(value?: string) {
   return value
     ?.trim()

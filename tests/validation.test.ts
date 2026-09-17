@@ -38,3 +38,15 @@ test('normalizes user input and enforces size limits', () => {
     false,
   );
 });
+
+test('accepts multiple services, normalizes retries, and rejects empty or unknown choices', () => {
+  assert.deepEqual(
+    inquirySchema.parse({ ...input, service: ['website', 'saas', 'website'] })
+      .service,
+    ['saas', 'website'],
+  );
+  assert.deepEqual(inquirySchema.parse(input).service, ['website']);
+  for (const service of [[], ['unknown'], ['website', 'unknown']]) {
+    assert.equal(inquirySchema.safeParse({ ...input, service }).success, false);
+  }
+});

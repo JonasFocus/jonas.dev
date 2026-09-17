@@ -195,3 +195,29 @@ test('anonymous cannot execute the owner membership helper', async () => {
   );
   assert.equal(result.rows[0].allowed, false);
 });
+
+test('stores every service selection and preserves legacy submissions', async () => {
+  const input = { ...payload(), services: ['website', 'saas', 'web-app'] };
+  const id = await submit(input);
+  assert.equal(await submit(input), id);
+  const result = await asUser(owner, () =>
+    db.query<{ service: string; services: string[] }>(
+      'select service,services from public.requests where id=$1',
+      [id],
+    ),
+  );
+  assert.deepEqual(result.rows[0], {
+    service: 'website',
+    services: ['website', 'saas', 'web-app'],
+  });
+  const legacyId = await submit(payload());
+  const legacy = await db.query<{ services: string[] }>(
+    'select services from public.requests where id=$1',
+    [legacyId],
+  );
+  assert.deepEqual(legacy.rows[0].services, ['website']);
+  for (const services of [[], ['unknown'], ['website', null]]) {
+    const invalid = { ...payload(), services };
+    await assert.rejects(() => submit(invalid));
+  }
+});

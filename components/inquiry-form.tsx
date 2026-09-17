@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Check, Globe2, Layers3, PanelsTopLeft, Sparkles } from 'lucide-react';
 import { useEffect, useId, useRef, useState, type SyntheticEvent } from 'react';
 import './inquiry-form.css';
 
@@ -11,6 +12,114 @@ type Result =
   | { kind: 'error'; message: string }
   | { kind: 'success'; reference: string };
 
+const projectTypes = [
+  {
+    value: 'website',
+    label: 'Website',
+    detail: 'A place for your brand',
+    icon: Globe2,
+  },
+  {
+    value: 'saas',
+    label: 'SaaS product',
+    detail: 'An idea people use',
+    icon: Layers3,
+  },
+  {
+    value: 'web-app',
+    label: 'Web app',
+    detail: 'A better way to work',
+    icon: PanelsTopLeft,
+  },
+  {
+    value: 'other',
+    label: 'Let’s explore',
+    detail: 'We can figure it out',
+    icon: Sparkles,
+  },
+];
+
+function ProjectRange({
+  name,
+  label,
+  options,
+}: {
+  name: string;
+  label: string;
+  options: readonly [string, string, ...string[]];
+}) {
+  const id = useId();
+  const [position, setPosition] = useState(0);
+  const index = Math.round(position);
+  const lastIndex = options.length - 1;
+  const value = options[index] ?? options[0];
+  return (
+    <div className="inquiry-range-card">
+      <div className="inquiry-range-heading">
+        <label htmlFor={id}>{label}</label>
+        <span>Optional</span>
+      </div>
+      <output className="inquiry-range-values" htmlFor={id} aria-live="off">
+        {options.map((option, optionIndex) => (
+          <span
+            key={option}
+            data-active={optionIndex === index}
+            aria-hidden={optionIndex !== index}
+          >
+            {option}
+          </span>
+        ))}
+      </output>
+      <input
+        id={id}
+        type="range"
+        min={0}
+        max={lastIndex}
+        step={0.001}
+        value={position}
+        aria-valuetext={value}
+        style={{
+          backgroundSize: `${(position / lastIndex) * 100}% 4px, 100% 4px`,
+        }}
+        onChange={(event) => setPosition(Number(event.target.value))}
+        onKeyDown={(event) => {
+          let nextIndex: number;
+          switch (event.key) {
+            case 'ArrowRight':
+            case 'ArrowUp':
+              nextIndex = Math.min(lastIndex, index + 1);
+              break;
+            case 'ArrowLeft':
+            case 'ArrowDown':
+              nextIndex = Math.max(0, index - 1);
+              break;
+            case 'Home':
+              nextIndex = 0;
+              break;
+            case 'End':
+              nextIndex = lastIndex;
+              break;
+            default:
+              return;
+          }
+          event.preventDefault();
+          setPosition(nextIndex);
+        }}
+      />
+      <div className="inquiry-range-ticks" aria-hidden="true">
+        {options.map((option, optionIndex) => (
+          <span key={option} data-active={optionIndex <= index} />
+        ))}
+      </div>
+      <input type="hidden" name={name} value={index === 0 ? '' : value} />
+      <div className="inquiry-range-scale" aria-hidden="true">
+        <span>Not sure yet</span>
+        <span>{options[options.length - 1]}</span>
+      </div>
+    </div>
+  );
+}
+
 export function InquiryForm({ caseStudy }: { caseStudy?: Study }) {
   const id = useId();
   const submissionId = useRef<string | null>(null);
@@ -19,6 +128,16 @@ export function InquiryForm({ caseStudy }: { caseStudy?: Study }) {
     event.preventDefault();
     if (result.kind === 'pending') return;
     const form = new FormData(event.currentTarget);
+    if (form.getAll('service').length === 0) {
+      setResult({
+        kind: 'error',
+        message: 'Select at least one project type.',
+      });
+      event.currentTarget
+        .querySelector<HTMLInputElement>('input[name="service"]')
+        ?.focus();
+      return;
+    }
     submissionId.current ??= crypto.randomUUID();
     setResult({ kind: 'pending' });
     try {
@@ -30,7 +149,7 @@ export function InquiryForm({ caseStudy }: { caseStudy?: Study }) {
           name: form.get('name'),
           email: form.get('email'),
           company: form.get('company'),
-          service: form.get('service'),
+          service: form.getAll('service'),
           description: form.get('description'),
           budget: form.get('budget'),
           timeline: form.get('timeline'),
@@ -83,62 +202,91 @@ export function InquiryForm({ caseStudy }: { caseStudy?: Study }) {
   return (
     <form className="inquiry-form" onSubmit={submit}>
       <p className="inquiry-note">
-        Tell me a little about your project. Required fields are marked *.
+        A little context goes a long way. Tell me what you have in mind.
       </p>
       <fieldset disabled={result.kind === 'pending'}>
         <div className="inquiry-grid">
           <label htmlFor={`${id}-name`}>
-            Name *
+            Your name *
             <input
               id={`${id}-name`}
               name="name"
+              placeholder="Alex Morgan"
               autoComplete="name"
               required
               maxLength={120}
             />
           </label>
           <label htmlFor={`${id}-email`}>
-            Email *
+            Email address *
             <input
               id={`${id}-email`}
               name="email"
               type="email"
+              placeholder="alex@company.com"
               autoComplete="email"
               required
               maxLength={254}
             />
           </label>
-          <label htmlFor={`${id}-company`}>
-            Company
-            <input
-              id={`${id}-company`}
-              name="company"
-              autoComplete="organization"
-              maxLength={160}
-            />
-          </label>
-          <label htmlFor={`${id}-service`}>
-            Project type *
-            <select
-              id={`${id}-service`}
-              name="service"
-              defaultValue={
-                caseStudy === 'emerald'
-                  ? 'website'
-                  : caseStudy === 'violet'
-                    ? 'saas'
-                    : caseStudy === 'amber'
-                      ? 'web-app'
-                      : 'other'
-              }
-            >
-              <option value="website">Website</option>
-              <option value="saas">SaaS product</option>
-              <option value="web-app">Custom web app</option>
-              <option value="other">Let&apos;s work it out</option>
-            </select>
-          </label>
         </div>
+        <label htmlFor={`${id}-company`}>
+          <span>
+            Company <span className="inquiry-optional">Optional</span>
+          </span>
+          <input
+            id={`${id}-company`}
+            name="company"
+            autoComplete="organization"
+            maxLength={160}
+            placeholder="Your company or team"
+          />
+        </label>
+        <fieldset className="inquiry-project-types">
+          <legend>
+            What are we creating? *{' '}
+            <span className="inquiry-optional">Select all that apply</span>
+          </legend>
+          <div className="inquiry-project-grid">
+            {projectTypes.map((project) => (
+              <label
+                className="inquiry-project"
+                data-service={project.value}
+                key={project.value}
+              >
+                <input
+                  type="checkbox"
+                  name="service"
+                  value={project.value}
+                  defaultChecked={
+                    project.value ===
+                    (caseStudy === 'emerald'
+                      ? 'website'
+                      : caseStudy === 'violet'
+                        ? 'saas'
+                        : caseStudy === 'amber'
+                          ? 'web-app'
+                          : 'other')
+                  }
+                />
+                <span className="inquiry-project-icon" aria-hidden="true">
+                  <project.icon
+                    className="inquiry-project-glyph"
+                    size={20}
+                    strokeWidth={1.6}
+                  />
+                  <Check
+                    className="inquiry-project-check"
+                    size={20}
+                    strokeWidth={1.8}
+                  />
+                </span>
+                <span className="inquiry-project-name">{project.label}</span>
+                <span className="inquiry-project-detail">{project.detail}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
         <label htmlFor={`${id}-description`}>
           What would you like to build? *
           <textarea
@@ -147,28 +295,36 @@ export function InquiryForm({ caseStudy }: { caseStudy?: Study }) {
             required
             minLength={20}
             maxLength={5000}
-            rows={4}
+            rows={3}
+            placeholder="The idea, the people it’s for, and what you’d love it to do…"
           />
         </label>
-        <div className="inquiry-grid">
-          <label htmlFor={`${id}-budget`}>
-            Budget, if known
-            <input
-              id={`${id}-budget`}
-              name="budget"
-              maxLength={120}
-              placeholder="A range is fine"
-            />
-          </label>
-          <label htmlFor={`${id}-timeline`}>
-            Timing, if known
-            <input
-              id={`${id}-timeline`}
-              name="timeline"
-              maxLength={120}
-              placeholder="When would you like to launch?"
-            />
-          </label>
+        <div className="inquiry-grid inquiry-ranges">
+          <ProjectRange
+            name="budget"
+            label="Project budget"
+            options={[
+              'Let’s work it out',
+              'Under $2,500',
+              '$2,500–$5,000',
+              '$5,000–$10,000',
+              '$10,000–$25,000',
+              '$25,000–$50,000',
+              '$50,000+',
+            ]}
+          />
+          <ProjectRange
+            name="timeline"
+            label="Launch Date"
+            options={[
+              'I’m flexible',
+              'Less than 2 weeks',
+              'Within a month',
+              '1–3 months',
+              '3–6 months',
+              '6+ months',
+            ]}
+          />
         </div>
         <div className="inquiry-honeypot" aria-hidden="true">
           <label>
@@ -187,8 +343,11 @@ export function InquiryForm({ caseStudy }: { caseStudy?: Study }) {
             .
           </span>
         </label>
-        <button className="case-book" type="submit">
-          {result.kind === 'pending' ? 'Saving request…' : 'Send request'}
+        <button className="inquiry-submit" type="submit">
+          {result.kind === 'pending'
+            ? 'Saving request…'
+            : 'Send project request'}
+          <span aria-hidden="true">↗</span>
         </button>
       </fieldset>
       {result.kind === 'error' && (
@@ -232,7 +391,7 @@ export function InquiryButton() {
           ×
         </button>
         <h2 id={id}>Let&apos;s talk about your idea.</h2>
-        {open && <InquiryForm />}
+        <InquiryForm />
       </dialog>
     </>
   );

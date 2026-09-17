@@ -47,28 +47,37 @@ test('public request to owner review to customer', async ({
       .getByRole('button', { name: 'Start your project', exact: false })
       .click();
     await page
-      .getByRole('textbox', { name: 'Name *', exact: true })
+      .getByRole('textbox', { name: 'Your name *', exact: true })
       .fill(payload.name);
     await page
-      .getByRole('textbox', { name: 'Email *', exact: true })
+      .getByRole('textbox', { name: 'Email address *', exact: true })
       .fill(payload.email);
     await page
-      .getByRole('textbox', { name: 'Company', exact: true })
+      .getByRole('textbox', { name: 'Company Optional', exact: true })
       .fill(payload.company);
     await page
-      .getByRole('combobox', { name: 'Project type *' })
-      .selectOption('website');
+      .locator('.inquiry-project-name')
+      .filter({ hasText: /^Let’s explore$/ })
+      .click();
+    await page
+      .locator('.inquiry-project-name')
+      .filter({ hasText: /^Website$/ })
+      .click();
+    await page
+      .locator('.inquiry-project-name')
+      .filter({ hasText: /^SaaS product$/ })
+      .click();
     await page
       .getByRole('textbox', { name: 'What would you like to build? *' })
       .fill(payload.description);
-    await page.getByRole('checkbox').check();
+    await page.locator('input[name="consent"]').check();
     const saving = page.waitForResponse(
       (response) =>
         response.url().endsWith('/api/requests') &&
         response.request().method() === 'POST',
     );
     await page
-      .getByRole('button', { name: 'Send request', exact: true })
+      .getByRole('button', { name: 'Send project request', exact: true })
       .click();
     const saved = await saving;
     expect(saved.status()).toBe(201);
@@ -164,9 +173,10 @@ test('public request to owner review to customer', async ({
     await expect(page.getByText('Saved.', { exact: true })).toBeVisible();
     const state = await owner
       .from('requests')
-      .select('id,status,read_at,customer_id')
+      .select('id,status,read_at,customer_id,services')
       .eq('id', id)
       .single();
+    expect(state.data?.services).toEqual(['saas', 'website']);
     expect(state.data?.status).toBe('qualified');
     expect(state.data?.read_at).toBeTruthy();
     expect(state.data?.customer_id).toBe(customerId);

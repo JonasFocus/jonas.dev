@@ -11,6 +11,7 @@ export type RequestRecord = {
   email: string;
   company: string | null;
   service: string;
+  services: string[] | null;
   description: string;
   budget: string | null;
   timeline: string | null;

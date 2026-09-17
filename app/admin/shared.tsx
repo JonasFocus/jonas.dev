@@ -88,7 +88,11 @@ export function RequestList({ requests }: { requests: RequestRecord[] }) {
             <p className="admin-excerpt">{request.description}</p>
           </div>
           <div className="admin-request-meta">
-            <span>{request.service.replaceAll('-', ' ')}</span>
+            <span>
+              {(request.services ?? [request.service])
+                .map((service) => service.replaceAll('-', ' '))
+                .join(' · ')}
+            </span>
             <DateLabel value={request.created_at} />
             <span aria-hidden="true">↗</span>
           </div>

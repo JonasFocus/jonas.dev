@@ -1,4 +1,5 @@
 import { z } from 'zod';
+const serviceSchema = z.enum(['website', 'saas', 'web-app', 'other']);
 const optionalText = (max: number) =>
   z.string().trim().max(max).optional().default('');
 export const inquirySchema = z
@@ -11,7 +12,15 @@ export const inquirySchema = z
       .toLowerCase()
       .max(254),
     company: optionalText(160),
-    service: z.enum(['website', 'saas', 'web-app', 'other']),
+    service: z
+      .union([
+        serviceSchema.transform((value) => [value]),
+        z
+          .array(serviceSchema)
+          .min(1, 'Select at least one project type.')
+          .max(4),
+      ])
+      .transform((values) => [...new Set(values)].sort()),
     description: z
       .string()
       .trim()
@@ -41,6 +50,7 @@ export const requestRecordSchema = z.object({
   email: z.string(),
   company: z.string().nullable(),
   service: z.string(),
+  services: z.array(serviceSchema).nullable(),
   description: z.string(),
   budget: z.string().nullable(),
   timeline: z.string().nullable(),
