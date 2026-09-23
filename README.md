@@ -60,7 +60,7 @@ Complete every gate in `docs/production-checklist.md` before production promotio
 
 ## Structure
 
-- `app/new/home.tsx` and related components: public page, reused at `/`.
+- `app/_home/home.tsx` and related components: public homepage at `/` (`/new` redirects here).
 - `components/inquiry-form.tsx`: accessible inquiry form and dialog.
 - `app/api/requests`: bounded validation and rate-limited persistence.
 - `app/admin`: private dashboard, inbox, customers, notes, follow-ups and login.
