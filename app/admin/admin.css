@@ -34,10 +34,16 @@
   -webkit-font-smoothing: antialiased;
 }
 
-.cx :where(h1, h2, h3, h4) {
+/* The public site styles bare h1 and h2 globally, so headings are reset here
+   with enough weight to beat that. Heading classes below are written as
+   `.cx .x` to win over this reset in turn. */
+.cx :is(h1, h2, h3, h4) {
   margin: 0;
   color: var(--ink);
+  font-size: inherit;
   font-weight: 500;
+  letter-spacing: normal;
+  line-height: inherit;
 }
 
 .cx :where(p, dd) {
@@ -301,7 +307,7 @@
   color: var(--dim);
 }
 
-.cx-hero-title {
+.cx .cx-hero-title {
   margin-top: 12px;
   font-size: 26px;
   letter-spacing: -0.03em;
@@ -309,8 +315,14 @@
   text-wrap: balance;
 }
 
-.cx-hero-body > .cx-hero-title:first-child {
+.cx .cx-hero-body > .cx-hero-title:first-child {
   margin-top: 0;
+}
+
+.cx-hero-status > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
 }
 
 .cx-hero-sub {
@@ -401,16 +413,12 @@ a.cx-figure:hover span {
 
 /* ── Section labels, notes and banners ── */
 
-.cx-label {
+.cx .cx-label {
   margin: 44px 0 4px;
   font-size: 12.5px;
   font-weight: 400;
+  line-height: 1.5;
   color: var(--faint);
-}
-
-.cx :where(h2.cx-label) {
-  color: var(--faint);
-  font-weight: 400;
 }
 
 .cx-note {
@@ -432,6 +440,9 @@ a.cx-figure:hover span {
 /* ── Quiet lists ── */
 
 .cx-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
   border-top: 1px solid var(--hair);
 }
 
@@ -445,6 +456,11 @@ a.cx-figure:hover span {
   border-bottom: 1px solid var(--hair);
   animation: cxIn 400ms var(--ease) both;
   transition: background-color 160ms ease;
+}
+
+.cx-row > :first-child {
+  display: grid;
+  place-items: center;
 }
 
 .cx-row:hover {
@@ -832,6 +848,15 @@ a.cx-row-name:hover {
   }
 }
 
+/* A setting: its current state on the left, the control that changes it on the right. */
+.cx-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
 /* ── Sign-in ── */
 
 .cx-login {
@@ -855,7 +880,7 @@ a.cx-row-name:hover {
   font-weight: 500;
 }
 
-.cx-login-brand + .cx-hero-title {
+.cx .cx-login-brand + .cx-hero-title {
   margin-top: 22px;
 }
 
@@ -916,7 +941,7 @@ a.cx-row-name:hover {
     padding: 22px 20px 24px;
   }
 
-  .cx-hero-title {
+  .cx .cx-hero-title {
     font-size: 23px;
   }
 
