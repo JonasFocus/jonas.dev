@@ -263,3 +263,77 @@ test('newsletter defaults hidden and only the owner can change visibility', asyn
     assert.equal(await read(), false);
   }
 });
+
+test('converting two requests from the same email reuses one customer', async () => {
+  const email = `repeat-${randomUUID()}@example.test`;
+  const first = await submit({ ...payload(), email });
+  const second = await submit({ ...payload(), email: email.toUpperCase() });
+  await asUser(owner, async () => {
+    const a = await db.query<{ id: string }>(
+      'select public.convert_request($1) id',
+      [first],
+    );
+    const b = await db.query<{ id: string }>(
+      'select public.convert_request($1) id',
+      [second],
+    );
+    assert.equal(a.rows[0].id, b.rows[0].id);
+    const linked = await db.query<{ n: number }>(
+      'select count(*)::int n from requests where customer_id=$1',
+      [a.rows[0].id],
+    );
+    assert.equal(linked.rows[0].n, 2);
+  });
+});
+
+test('customer emails are unique regardless of case', async () => {
+  const email = `unique-${randomUUID()}@example.test`;
+  await db.query("insert into customers(name,email) values('First',$1)", [
+    email,
+  ]);
+  await assert.rejects(
+    db.query("insert into customers(name,email) values('Second',upper($1))", [
+      email,
+    ]),
+    /duplicate key/,
+  );
+});
+
+test('email uniqueness migration merges existing duplicate customers', async () => {
+  const email = `dupe-${randomUUID()}@example.test`;
+  await db.exec('drop index public.customers_email_lower_key');
+  const inserted = await db.query<{ id: string }>(
+    `insert into customers(name,email,created_at) values
+      ('Oldest',$1,now()-interval '2 days'),
+      ('Newer',upper($1),now()-interval '1 day'),
+      ('Newest',$1,now())
+      returning id`,
+    [email],
+  );
+  const customerIds = inserted.rows.map((row) => row.id);
+  const requestIds: string[] = [];
+  for (const customerId of customerIds) {
+    const id = await submit();
+    await db.query('update requests set customer_id=$1 where id=$2', [
+      customerId,
+      id,
+    ]);
+    requestIds.push(id);
+  }
+  await db.exec(
+    await readFile(
+      'supabase/migrations/20260922090000_customer_email_unique.sql',
+      'utf8',
+    ),
+  );
+  const remaining = await db.query<{ id: string }>(
+    'select id from customers where lower(email)=$1',
+    [email],
+  );
+  assert.deepEqual(remaining.rows, [{ id: customerIds[0] }]);
+  const linked = await db.query<{ n: number }>(
+    'select count(*)::int n from requests where id = any($1) and customer_id=$2',
+    [requestIds, customerIds[0]],
+  );
+  assert.equal(linked.rows[0].n, 3);
+});
