@@ -1,6 +1,6 @@
 # Jonas website and private admin
 
-Next.js 16, TypeScript, Supabase Postgres/Auth. The public website accepts project inquiries; the owner manages requests, customers, internal notes and follow-ups at `/admin`. Customer email is contact data only. The application sends no email.
+Next.js 16, TypeScript, Supabase Postgres/Auth. The public website accepts project inquiries; the owner manages requests, customers, internal notes and follow-ups at `/admin`. Customer email is contact data only. The application sends no email; new inquiries can optionally post an alert to a Slack channel.
 
 ## Development
 
@@ -31,6 +31,7 @@ Required configuration is documented in `.env.example`:
 - Exact `APP_URL` origin for request-origin checking.
 - Random 32+ character `INTAKE_HASH_SECRET` for abuse-protection hashes.
 - Optional external booking URL. Without it, visitors can still request a walkthrough through the inquiry form.
+- Optional server-only `SLACK_WEBHOOK_URL` (a Slack Incoming Webhook). When set, each new inquiry posts the contact details, a short brief and a link to it in `/admin`. Retries of the same submission do not post again. When unset, no alert is sent.
 
 Use independent preview/production databases and secrets. Never expose the Supabase secret key to browser code. No email provider is required.
 

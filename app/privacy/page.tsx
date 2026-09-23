@@ -30,10 +30,10 @@ export default function PrivacyPage() {
       <h2 className="mt-8 text-xl">Storage and access</h2>
       <p className="mt-3">
         Requests are stored in Supabase and reviewed through a private admin
-        area. Vercel hosts this website. These services process information
-        needed to run the site. Technical request information may be processed
-        to prevent abuse and diagnose failures. Admin sign-in uses
-        authentication cookies.
+        area. New requests may be summarized in a private Slack alert to Jonas.
+        Vercel hosts this website. These services process information needed to
+        run the site. Technical request information may be processed to prevent
+        abuse and diagnose failures. Admin sign-in uses authentication cookies.
       </p>
       <h2 className="mt-8 text-xl">Your choices</h2>
       <p className="mt-3">
