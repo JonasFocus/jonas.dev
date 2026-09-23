@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 import { isPast } from 'date-fns';
 import type { RequestRecord, FollowUpRecord } from '@/lib/crm/types';
 import { AdminForm } from './forms';
@@ -36,19 +37,48 @@ export function DateLabel({
     </time>
   );
 }
-export function Heading({
+export function Hero({
   title,
   subtitle,
+  status,
+  tone,
+  children,
 }: {
   title: string;
-  subtitle: string;
+  subtitle?: ReactNode;
+  status?: ReactNode;
+  tone?: 'cool' | 'warm';
+  children?: ReactNode;
 }) {
   return (
-    <header className="admin-heading">
-      <p className="admin-eyebrow">Private workspace</p>
-      <h1>{title}</h1>
-      <p>{subtitle}</p>
-    </header>
+    <section className="cx-hero">
+      <div className="cx-hero-art cx-art" aria-hidden="true">
+        <div className="cx-dither" data-tone={tone} />
+      </div>
+      <div className="cx-hero-body">
+        {status && <p className="cx-hero-status">{status}</p>}
+        <h1 className="cx-hero-title">{title}</h1>
+        {subtitle && <p className="cx-hero-sub">{subtitle}</p>}
+        {children && <div className="cx-figures">{children}</div>}
+      </div>
+    </section>
+  );
+}
+export function SearchIcon() {
+  return (
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      aria-hidden="true"
+    >
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
+    </svg>
   );
 }
 export function Empty({ title, body }: { title: string; body: string }) {

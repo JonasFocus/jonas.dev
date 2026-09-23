@@ -10,25 +10,22 @@ export default async function WorkspaceLayout({
 }) {
   const { user } = await requireOwner();
   return (
-    <div className="admin-shell">
-      <a href="#admin-content" className="admin-skip">
+    <div className="cx-col">
+      <a href="#admin-content" className="cx-skip">
         Skip to content
       </a>
-      <header className="admin-masthead">
-        <Link href="/admin" className="admin-brand">
-          <span className="admin-mark" aria-hidden="true">
-            J
-          </span>
-          Console
-        </Link>
-        <Link href="/" className="admin-site-link">
-          jonasinfocus.com
-        </Link>
-        <span className="admin-operator">{user.email}</span>
+      <header className="cx-top">
+        <span className="cx-mark" aria-hidden="true">
+          J
+        </span>
+        <span className="cx-wordmark">
+          Console<Link href="/">jonasinfocus.com</Link>
+        </span>
+        <span className="cx-who">{user.email}</span>
         <SignOut />
       </header>
       <AdminNavigation />
-      <main id="admin-content" className="admin-main">
+      <main id="admin-content" className="cx-pane">
         {children}
       </main>
     </div>

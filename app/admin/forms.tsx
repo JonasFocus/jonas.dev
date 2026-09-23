@@ -40,22 +40,24 @@ export function AdminForm({
     {},
   );
   return (
-    <form ref={ref} action={submit} className="admin-form">
+    <form ref={ref} action={submit} className="cs-form">
       <input type="hidden" name="id" value={id} />
       <fieldset disabled={pending}>
         {children}
-        <button className="admin-button" type="submit">
-          {pending ? 'Saving…' : label}
-        </button>
+        <div className="cs-form-foot">
+          <button className="cs-button" type="submit">
+            {pending ? 'Saving…' : label}
+          </button>
+          <span className="cs-feedback" aria-live="polite" aria-atomic="true">
+            {state.error && (
+              <span className="cx-bad" role="alert">
+                {state.error}
+              </span>
+            )}
+            {state.success && <span className="cx-ok">{state.success}</span>}
+          </span>
+        </div>
       </fieldset>
-      <div aria-live="polite" aria-atomic="true">
-        {state.error && (
-          <p className="admin-error" role="alert">
-            {state.error}
-          </p>
-        )}
-        {state.success && <p className="admin-success">{state.success}</p>}
-      </div>
     </form>
   );
 }

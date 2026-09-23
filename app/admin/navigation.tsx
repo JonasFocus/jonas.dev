@@ -11,11 +11,12 @@ const links = [
 export function AdminNavigation() {
   const path = usePathname();
   return (
-    <nav aria-label="Admin" className="admin-nav">
+    <nav aria-label="Admin" className="cx-tabs">
       {links.map(([href, label]) => (
         <Link
           key={href}
           href={href}
+          className="cx-tab"
           aria-current={
             (href === '/admin' ? path === href : path.startsWith(href))
               ? 'page'

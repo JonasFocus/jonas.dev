@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { getFollowUps } from '@/lib/crm/queries';
-import { Heading, FollowUps } from '../../shared';
+import { Hero, FollowUps } from '../../shared';
 import { Pagination, pageNumber } from '../../pagination';
 
 export default async function FollowUpPage({
@@ -14,7 +14,7 @@ export default async function FollowUpPage({
   const items = await getFollowUps({ page, completed });
   return (
     <>
-      <Heading
+      <Hero
         title="Follow-ups"
         subtitle={
           completed

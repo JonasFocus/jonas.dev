@@ -15,25 +15,42 @@ export function SignOut() {
       if (error) throw error;
       window.location.assign('/admin/login');
     } catch {
-      setError('Could not sign out. Try again.');
+      setError('Could not sign out. You are still signed in. Try again.');
       setPending(false);
     }
   }
   return (
-    <div>
+    <>
       <button
-        className="admin-text-button"
+        className="cx-signout"
+        type="button"
         onClick={signOut}
         disabled={pending}
+        aria-label="Sign out"
+        title="Sign out"
       >
-        {pending ? 'Signing out…' : 'Sign out'}
+        <svg
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+          <path d="m16 17 5-5-5-5" />
+          <path d="M21 12H9" />
+        </svg>
       </button>
       {error && (
-        <p role="alert" className="admin-error">
+        <p role="alert" className="cx-error">
           {error}
         </p>
       )}
-    </div>
+    </>
   );
 }
 
@@ -75,9 +92,11 @@ export function LoginForm() {
     }
   }
   return (
-    <div className="admin-stack">
+    <div className="cx-login-actions">
       <button
-        className="admin-button"
+        className="cs-button"
+        type="button"
+        data-primary
         disabled={pending}
         onClick={() => void signIn()}
       >
@@ -85,10 +104,10 @@ export function LoginForm() {
       </button>
       <details>
         <summary>Use owner password</summary>
-        <form action={signIn} className="admin-form">
+        <form action={signIn} className="cs-form">
           <fieldset disabled={pending}>
-            <label>
-              Email
+            <label className="cs-field">
+              <span>Email</span>
               <input
                 name="email"
                 type="email"
@@ -96,8 +115,8 @@ export function LoginForm() {
                 autoComplete="username"
               />
             </label>
-            <label>
-              Password
+            <label className="cs-field">
+              <span>Password</span>
               <input
                 name="password"
                 type="password"
@@ -105,14 +124,16 @@ export function LoginForm() {
                 autoComplete="current-password"
               />
             </label>
-            <button className="admin-button" type="submit">
-              {pending ? 'Signing in…' : 'Sign in'}
-            </button>
+            <div className="cs-form-foot">
+              <button className="cs-button" type="submit">
+                {pending ? 'Signing in…' : 'Sign in'}
+              </button>
+            </div>
           </fieldset>
         </form>
       </details>
       {error && (
-        <p className="admin-error" role="alert">
+        <p className="cx-error" role="alert">
           {error}
         </p>
       )}
@@ -141,18 +162,23 @@ export function PasskeySettings() {
     }
   }
   return (
-    <div className="admin-form">
-      <button className="admin-button" onClick={register} disabled={pending}>
+    <div className="cs-form-foot">
+      <button
+        className="cs-button"
+        type="button"
+        onClick={register}
+        disabled={pending}
+      >
         {pending ? 'Waiting for your device…' : 'Add a passkey'}
       </button>
-      <div aria-live="polite">
+      <span className="cs-feedback" aria-live="polite">
         {error && (
-          <p role="alert" className="admin-error">
+          <span role="alert" className="cx-bad">
             {error}
-          </p>
+          </span>
         )}
-        {message && <p className="admin-success">{message}</p>}
-      </div>
+        {message && <span className="cx-ok">{message}</span>}
+      </span>
     </div>
   );
 }
