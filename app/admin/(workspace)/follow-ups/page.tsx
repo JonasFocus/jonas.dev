@@ -41,7 +41,7 @@ export default async function FollowUpPage({
           <h2>{completed ? 'Completed' : 'To do'}</h2>
           <span>{Math.min(items.length, 50)} shown</span>
         </div>
-        <FollowUps items={items.slice(0, 50)} />
+        <FollowUps items={items.slice(0, 50)} showRequest />
       </section>
       <Pagination
         path="/admin/follow-ups"

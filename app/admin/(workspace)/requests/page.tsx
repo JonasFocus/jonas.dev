@@ -1,6 +1,7 @@
+import Link from 'next/link';
 import { Pagination, pageNumber } from '../../pagination';
 import { getRequests } from '@/lib/crm/queries';
-import { Hero, SearchIcon, RequestList, statusLabels } from '../../shared';
+import { Hero, RequestTable, SearchIcon, statusLabels } from '../../shared';
 export default async function Requests({
   searchParams,
 }: {
@@ -10,6 +11,7 @@ export default async function Requests({
   const page = pageNumber(filters.page);
   const requests = await getRequests({ ...filters, page });
   const visible = requests.slice(0, 50);
+  const filtered = Boolean(filters.q || filters.status);
   return (
     <>
       <Hero
@@ -44,14 +46,21 @@ export default async function Requests({
         <button className="cs-button" type="submit">
           Apply filters
         </button>
+        {filtered && (
+          <Link className="cs-quiet-link" href="/admin/requests">
+            Clear
+          </Link>
+        )}
+        <span className="cs-count">{visible.length} shown</span>
       </form>
-      <section className="admin-panel">
-        <div className="admin-section-heading">
-          <h2>Inbox</h2>
-          <span>{visible.length} shown</span>
-        </div>
-        <RequestList requests={visible} />
-      </section>
+      <RequestTable
+        requests={visible}
+        empty={
+          filtered
+            ? 'No requests match these filters.'
+            : 'New inquiries from your website will appear here.'
+        }
+      />
       <Pagination
         path="/admin/requests"
         page={page}

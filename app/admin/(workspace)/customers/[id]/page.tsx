@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { getCustomer } from '@/lib/crm/queries';
 import { AdminForm } from '../../../forms';
 import { updateCustomerAction } from '../../../actions';
-import { Hero, RequestList } from '../../../shared';
+import { Hero, RequestTable } from '../../../shared';
 export default async function Customer({
   params,
 }: {
@@ -73,7 +73,10 @@ export default async function Customer({
           <div className="admin-section-heading">
             <h2>Related requests</h2>
           </div>
-          <RequestList requests={requests} />
+          <RequestTable
+            requests={requests}
+            empty="No requests are linked to this customer."
+          />
         </section>
       </div>
     </>
