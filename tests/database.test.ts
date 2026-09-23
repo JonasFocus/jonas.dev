@@ -39,7 +39,7 @@ async function submit(
   email = randomUUID(),
 ) {
   const r = await db.query<{ id: string }>(
-    'select public.submit_request($1::jsonb,$2,$3,$4) id',
+    "select public.submit_request($1::jsonb,$2,$3,$4)->>'id' id",
     [JSON.stringify(input), fingerprint, ip, email],
   );
   return r.rows[0].id;
@@ -336,4 +336,18 @@ test('email uniqueness migration merges existing duplicate customers', async () 
     [requestIds, customerIds[0]],
   );
   assert.equal(linked.rows[0].n, 3);
+});
+
+test('intake reports whether a submission is new or a retry', async () => {
+  const input = JSON.stringify(payload());
+  const call = async () =>
+    (
+      await db.query<{ result: { id: string; created: boolean } }>(
+        'select public.submit_request($1::jsonb,$2,$3,$4) result',
+        [input, 'hash', randomUUID(), randomUUID()],
+      )
+    ).rows[0].result;
+  const first = await call();
+  assert.equal(first.created, true);
+  assert.deepEqual(await call(), { id: first.id, created: false });
 });

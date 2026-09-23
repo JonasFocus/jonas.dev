@@ -3,8 +3,15 @@ import { z } from 'zod';
 import { createHash, createHmac } from 'node:crypto';
 import { inquirySchema } from '@/lib/crm/validation';
 import { createIntakeClient } from '@/lib/supabase/server';
+import { sendInquiryAlert } from '@/lib/crm/notify';
+import { after } from 'next/server';
 
 export const runtime = 'nodejs';
+// Older databases return only the id; treat those as new so no inquiry goes unannounced.
+const submissionResult = z.union([
+  z.uuid().transform((id) => ({ id, created: true })),
+  z.object({ id: z.uuid(), created: z.boolean() }),
+]);
 const reply = (body: object, status: number) =>
   Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
 export async function POST(request: Request) {
@@ -114,12 +121,15 @@ export async function POST(request: Request) {
         503,
       );
     }
-    if (typeof data !== 'string')
+    const stored = submissionResult.safeParse(data);
+    if (!stored.success)
       return reply(
         { error: 'Your request could not be confirmed. Please try again.' },
         503,
       );
-    return reply({ ok: true, reference: data }, 201);
+    const { id: reference, created } = stored.data;
+    if (created) after(() => sendInquiryAlert(content, reference));
+    return reply({ ok: true, reference }, 201);
   } catch {
     return reply(
       {
