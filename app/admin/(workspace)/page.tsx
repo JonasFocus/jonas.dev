@@ -1,5 +1,6 @@
 import { getOwnerNewsletterEnabled } from '@/lib/homepage-settings';
 import { AdminForm } from '../forms';
+import { setNewsletterAction } from '../actions';
 import Link from 'next/link';
 import { getDashboard } from '@/lib/crm/queries';
 import { Heading, RequestList } from '../shared';
@@ -48,7 +49,7 @@ export default async function Dashboard() {
           remain closed until the newsletter is ready.
         </p>
         <AdminForm
-          operation="newsletter"
+          action={setNewsletterAction}
           id="homepage"
           label={newsletterEnabled ? 'Hide newsletter' : 'Show newsletter'}
         >

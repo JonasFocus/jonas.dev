@@ -2,6 +2,13 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getRequest } from '@/lib/crm/queries';
 import { AdminForm } from '../../../forms';
+import {
+  addFollowUpAction,
+  addNoteAction,
+  convertToCustomerAction,
+  markRequestReadAction,
+  updateRequestStatusAction,
+} from '../../../actions';
 import { DateLabel, FollowUps, statusLabels } from '../../../shared';
 export default async function RequestDetail({
   params,
@@ -63,7 +70,7 @@ export default async function RequestDetail({
                 </article>
               ))}
             </div>
-            <AdminForm operation="note" id={id} label="Add note" reset>
+            <AdminForm action={addNoteAction} id={id} label="Add note" reset>
               <label>
                 Note
                 <textarea
@@ -80,7 +87,7 @@ export default async function RequestDetail({
             <h2>Follow-ups</h2>
             <FollowUps items={followUps} />
             <AdminForm
-              operation="follow-up"
+              action={addFollowUpAction}
               id={id}
               label="Add follow-up"
               reset
@@ -105,7 +112,11 @@ export default async function RequestDetail({
         <div className="admin-stack">
           <section className="admin-panel admin-padded">
             <h2>Request status</h2>
-            <AdminForm operation="status" id={id} label="Update status">
+            <AdminForm
+              action={updateRequestStatusAction}
+              id={id}
+              label="Update status"
+            >
               <label>
                 Status
                 <select name="status" defaultValue={request.status}>
@@ -118,7 +129,11 @@ export default async function RequestDetail({
               </label>
             </AdminForm>
             {!request.read_at && (
-              <AdminForm operation="read" id={id} label="Mark as read" />
+              <AdminForm
+                action={markRequestReadAction}
+                id={id}
+                label="Mark as read"
+              />
             )}
           </section>
           <section className="admin-panel admin-padded">
@@ -137,7 +152,7 @@ export default async function RequestDetail({
                   original request stays here.
                 </p>
                 <AdminForm
-                  operation="convert"
+                  action={convertToCustomerAction}
                   id={id}
                   label="Convert to customer"
                 />

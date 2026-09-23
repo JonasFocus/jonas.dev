@@ -7,56 +7,14 @@ import * as crm from '@/lib/crm/mutations';
 
 export type ActionState = { error?: string; success?: string };
 
-export async function saveAdminAction(
-  _previous: ActionState,
-  data: FormData,
-): Promise<ActionState> {
-  const value = (key: string) => {
-    const entry = data.get(key);
-    return typeof entry === 'string' ? entry : '';
-  };
+function field(data: FormData, key: string) {
+  const entry = data.get(key);
+  return typeof entry === 'string' ? entry : '';
+}
+
+async function save(change: () => Promise<unknown>): Promise<ActionState> {
   try {
-    switch (value('operation')) {
-      case 'newsletter':
-        await setNewsletterEnabled(value('enabled'));
-        revalidatePath('/');
-        break;
-      case 'status':
-        await crm.updateRequest({ id: value('id'), status: value('status') });
-        break;
-      case 'read':
-        await crm.markRead(value('id'));
-        break;
-      case 'note':
-        await crm.addNote({ requestId: value('id'), body: value('body') });
-        break;
-      case 'follow-up':
-        await crm.addFollowUp({
-          requestId: value('id'),
-          title: value('title'),
-          dueAt: value('dueAt'),
-        });
-        break;
-      case 'complete':
-        await crm.completeFollowUp(value('id'));
-        break;
-      case 'convert':
-        await crm.convertToCustomer(value('id'));
-        break;
-      case 'customer':
-        await crm.updateCustomer({
-          id: value('id'),
-          name: value('name'),
-          email: value('email'),
-          company: value('company'),
-          status: value('status'),
-        });
-        break;
-      default:
-        return { error: 'This action is not available.' };
-    }
-    revalidatePath('/admin', 'layout');
-    return { success: 'Saved.' };
+    await change();
   } catch (error) {
     unstable_rethrow(error);
     return {
@@ -66,4 +24,80 @@ export async function saveAdminAction(
           : 'Could not save. Please try again.',
     };
   }
+  revalidatePath('/admin', 'layout');
+  return { success: 'Saved.' };
+}
+
+export async function setNewsletterAction(
+  _previous: ActionState,
+  data: FormData,
+) {
+  return save(async () => {
+    await setNewsletterEnabled(field(data, 'enabled'));
+    revalidatePath('/');
+  });
+}
+
+export async function updateRequestStatusAction(
+  _previous: ActionState,
+  data: FormData,
+) {
+  return save(() =>
+    crm.updateRequest({ id: field(data, 'id'), status: field(data, 'status') }),
+  );
+}
+
+export async function markRequestReadAction(
+  _previous: ActionState,
+  data: FormData,
+) {
+  return save(() => crm.markRead(field(data, 'id')));
+}
+
+export async function addNoteAction(_previous: ActionState, data: FormData) {
+  return save(() =>
+    crm.addNote({ requestId: field(data, 'id'), body: field(data, 'body') }),
+  );
+}
+
+export async function addFollowUpAction(
+  _previous: ActionState,
+  data: FormData,
+) {
+  return save(() =>
+    crm.addFollowUp({
+      requestId: field(data, 'id'),
+      title: field(data, 'title'),
+      dueAt: field(data, 'dueAt'),
+    }),
+  );
+}
+
+export async function completeFollowUpAction(
+  _previous: ActionState,
+  data: FormData,
+) {
+  return save(() => crm.completeFollowUp(field(data, 'id')));
+}
+
+export async function convertToCustomerAction(
+  _previous: ActionState,
+  data: FormData,
+) {
+  return save(() => crm.convertToCustomer(field(data, 'id')));
+}
+
+export async function updateCustomerAction(
+  _previous: ActionState,
+  data: FormData,
+) {
+  return save(() =>
+    crm.updateCustomer({
+      id: field(data, 'id'),
+      name: field(data, 'name'),
+      email: field(data, 'email'),
+      company: field(data, 'company'),
+      status: field(data, 'status'),
+    }),
+  );
 }
