@@ -273,34 +273,6 @@
   line-height: 24px;
   color: var(--muted-foreground);
 }
-.meridian-page .contact-action {
-  text-align: center;
-  margin-top: -60px;
-  padding-bottom: 96px;
-}
-.meridian-page .contact-action .new-button {
-  display: inline-flex;
-  height: 48px;
-}
-.meridian-page .new-contact-dialog {
-  margin: auto;
-  padding: 40px;
-  border: 1px solid var(--border);
-  border-radius: 28px;
-  background: var(--background);
-  color: var(--foreground);
-  width: min(520px, calc(100vw - 32px));
-}
-.meridian-page .new-contact-dialog::backdrop {
-  background: #0009;
-  backdrop-filter: blur(6px);
-}
-.meridian-page .dialog-close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  padding: 8px;
-}
 .meridian-page .new-reveal {
   animation: new-enter 0.65s ease both;
 }
