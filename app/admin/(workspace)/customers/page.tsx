@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Pagination, pageNumber } from '../../pagination';
 import { getCustomers } from '@/lib/crm/queries';
-import { Hero, Empty } from '../../shared';
+import { Hero, SearchIcon, Empty } from '../../shared';
 export default async function Customers({
   searchParams,
 }: {
@@ -18,19 +18,7 @@ export default async function Customers({
       />
       <form className="cs-toolbar">
         <label className="cx-search">
-          <svg
-            width="13"
-            height="13"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            aria-hidden="true"
-          >
-            <circle cx="11" cy="11" r="7" />
-            <path d="m20 20-3.5-3.5" />
-          </svg>
+          <SearchIcon />
           <input
             name="q"
             type="search"
