@@ -31,7 +31,7 @@ if (existing.length) {
       'Another owner already exists. No account or credentials changed.',
     );
   console.log(
-    `Owner already provisioned. ADMIN_USER_ID=${data.user.id}. Existing credentials are unchanged.`,
+    `Owner already provisioned (user ${data.user.id}). Existing credentials are unchanged.`,
   );
   process.exit(0);
 }
@@ -147,7 +147,7 @@ try {
       );
   }
   console.log(
-    `Owner ready without sending email. Set ADMIN_USER_ID=${user.id}. Recovery credentials are in work/owner-recovery.json. Move them to your password manager and remove the local file.`,
+    `Owner ready without sending email (user ${user.id}). Recovery credentials are in work/owner-recovery.json. Move them to your password manager and remove the local file.`,
   );
 } finally {
   await file.close();

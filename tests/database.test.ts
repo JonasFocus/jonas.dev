@@ -351,3 +351,16 @@ test('intake reports whether a submission is new or a retry', async () => {
   assert.equal(first.created, true);
   assert.deepEqual(await call(), { id: first.id, created: false });
 });
+
+test('admin_users holds exactly one owner', async () => {
+  await assert.rejects(
+    db.query('insert into public.admin_users(user_id) values ($1)', [
+      stranger,
+    ]),
+    /duplicate key/,
+  );
+  const owners = await db.query<{ user_id: string }>(
+    'select user_id from public.admin_users',
+  );
+  assert.deepEqual(owners.rows, [{ user_id: owner }]);
+});
