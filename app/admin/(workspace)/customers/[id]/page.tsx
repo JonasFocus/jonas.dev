@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { getCustomer } from '@/lib/crm/queries';
 import { AdminForm } from '../../../forms';
 import { updateCustomerAction } from '../../../actions';
-import { Heading, RequestList } from '../../../shared';
+import { Hero, RequestList } from '../../../shared';
 export default async function Customer({
   params,
 }: {
@@ -15,10 +15,10 @@ export default async function Customer({
   const { customer, requests } = data;
   return (
     <>
-      <Link href="/admin/customers" className="admin-back">
-        ← Customers
-      </Link>
-      <Heading
+      <p className="cs-crumb">
+        <Link href="/admin/customers">← All customers</Link>
+      </p>
+      <Hero
         title={customer.name}
         subtitle={customer.company || customer.email}
       />
@@ -30,8 +30,8 @@ export default async function Customer({
             id={id}
             label="Save customer"
           >
-            <label>
-              Name
+            <label className="cs-field">
+              <span>Name</span>
               <input
                 name="name"
                 required
@@ -40,8 +40,8 @@ export default async function Customer({
                 autoComplete="name"
               />
             </label>
-            <label>
-              Email
+            <label className="cs-field">
+              <span>Email</span>
               <input
                 name="email"
                 type="email"
@@ -51,8 +51,8 @@ export default async function Customer({
                 autoComplete="email"
               />
             </label>
-            <label>
-              Company
+            <label className="cs-field">
+              <span>Company</span>
               <input
                 name="company"
                 maxLength={160}
@@ -60,8 +60,8 @@ export default async function Customer({
                 autoComplete="organization"
               />
             </label>
-            <label>
-              Status
+            <label className="cs-field">
+              <span>Status</span>
               <select name="status" defaultValue={customer.status}>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>

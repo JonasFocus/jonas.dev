@@ -1,6 +1,6 @@
 import { Pagination, pageNumber } from '../../pagination';
 import { getRequests } from '@/lib/crm/queries';
-import { Heading, RequestList, statusLabels } from '../../shared';
+import { Hero, RequestList, statusLabels } from '../../shared';
 export default async function Requests({
   searchParams,
 }: {
@@ -12,33 +12,50 @@ export default async function Requests({
   const visible = requests.slice(0, 50);
   return (
     <>
-      <Heading
+      <Hero
         title="Requests"
         subtitle="Review new inquiries and keep every conversation moving."
       />
-      <form className="admin-filters">
-        <label>
-          Search
+      <form className="cs-toolbar">
+        <label className="cx-search">
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
           <input
             name="q"
             type="search"
-            placeholder="Name, email or company"
+            placeholder="Search name, email or company"
+            aria-label="Search requests"
             defaultValue={filters.q}
             maxLength={200}
           />
         </label>
-        <label>
-          Status
-          <select name="status" defaultValue={filters.status || ''}>
-            <option value="">All statuses</option>
-            {Object.entries(statusLabels).map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button className="admin-button">Apply filters</button>
+        <select
+          className="cs-select"
+          name="status"
+          aria-label="Status"
+          defaultValue={filters.status || ''}
+        >
+          <option value="">All statuses</option>
+          {Object.entries(statusLabels).map(([value, label]) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
+        </select>
+        <button className="cs-button" type="submit">
+          Apply filters
+        </button>
       </form>
       <section className="admin-panel">
         <div className="admin-section-heading">

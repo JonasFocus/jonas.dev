@@ -25,9 +25,9 @@ export function Pagination({
     return `${path}?${params.toString()}`;
   }
   return (
-    <nav className="admin-pagination" aria-label="Pagination">
+    <nav className="cs-pager" aria-label="Pagination">
       {page > 1 ? (
-        <Link className="admin-button" href={href(page - 1)} rel="prev">
+        <Link className="cs-quiet-link" href={href(page - 1)} rel="prev">
           ← Previous
         </Link>
       ) : (
@@ -35,7 +35,7 @@ export function Pagination({
       )}
       <span>Page {page}</span>
       {hasNext ? (
-        <Link className="admin-button" href={href(page + 1)} rel="next">
+        <Link className="cs-quiet-link" href={href(page + 1)} rel="next">
           Next →
         </Link>
       ) : (

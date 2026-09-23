@@ -9,7 +9,7 @@ import {
   markRequestReadAction,
   updateRequestStatusAction,
 } from '../../../actions';
-import { DateLabel, FollowUps, statusLabels } from '../../../shared';
+import { DateLabel, FollowUps, Hero, statusLabels } from '../../../shared';
 export default async function RequestDetail({
   params,
 }: {
@@ -21,19 +21,21 @@ export default async function RequestDetail({
   const { request, notes, activity, followUps } = detail;
   return (
     <>
-      <Link href="/admin/requests" className="admin-back">
-        ← Requests
-      </Link>
-      <header className="admin-heading">
-        <p className="admin-eyebrow">
-          {(request.services ?? [request.service])
-            .map((service) => service.replaceAll('-', ' '))
-            .join(' · ')}{' '}
-          · <DateLabel value={request.created_at} />
-        </p>
-        <h1>{request.name}</h1>
-        <p>{request.company || 'Individual inquiry'}</p>
-      </header>
+      <p className="cs-crumb">
+        <Link href="/admin/requests">← All requests</Link>
+      </p>
+      <Hero
+        status={
+          <>
+            {(request.services ?? [request.service])
+              .map((service) => service.replaceAll('-', ' '))
+              .join(' · ')}{' '}
+            · <DateLabel value={request.created_at} />
+          </>
+        }
+        title={request.name}
+        subtitle={request.company || 'Individual inquiry'}
+      />
       <div className="admin-detail-grid">
         <div className="admin-stack">
           <section className="admin-panel admin-padded">
@@ -71,8 +73,8 @@ export default async function RequestDetail({
               ))}
             </div>
             <AdminForm action={addNoteAction} id={id} label="Add note" reset>
-              <label>
-                Note
+              <label className="cs-field">
+                <span>Note</span>
                 <textarea
                   name="body"
                   required
@@ -92,8 +94,8 @@ export default async function RequestDetail({
               label="Add follow-up"
               reset
             >
-              <label>
-                Next step
+              <label className="cs-field">
+                <span>Next step</span>
                 <input
                   name="title"
                   required
@@ -101,8 +103,8 @@ export default async function RequestDetail({
                   placeholder="Review project scope"
                 />
               </label>
-              <label>
-                Due date and time
+              <label className="cs-field">
+                <span>Due date and time</span>
                 <input name="dueAt" type="datetime-local" required />
                 <small>Uses your device&apos;s time zone.</small>
               </label>
@@ -117,8 +119,8 @@ export default async function RequestDetail({
               id={id}
               label="Update status"
             >
-              <label>
-                Status
+              <label className="cs-field">
+                <span>Status</span>
                 <select name="status" defaultValue={request.status}>
                   {Object.entries(statusLabels).map(([value, label]) => (
                     <option key={value} value={value}>
@@ -140,14 +142,14 @@ export default async function RequestDetail({
             <h2>Customer</h2>
             {request.customer_id ? (
               <Link
-                className="admin-button"
+                className="cs-button"
                 href={`/admin/customers/${request.customer_id}`}
               >
                 View customer →
               </Link>
             ) : (
               <>
-                <p className="admin-muted">
+                <p className="cs-hint">
                   Create a customer record when you decide to work together. The
                   original request stays here.
                 </p>
@@ -173,7 +175,7 @@ export default async function RequestDetail({
                 ))}
               </ol>
             ) : (
-              <p className="admin-muted">No updates yet.</p>
+              <p className="cs-hint">No updates yet.</p>
             )}
           </section>
         </div>

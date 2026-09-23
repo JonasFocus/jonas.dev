@@ -3,7 +3,7 @@ import { AdminForm } from '../forms';
 import { setNewsletterAction } from '../actions';
 import Link from 'next/link';
 import { getDashboard } from '@/lib/crm/queries';
-import { Heading, RequestList } from '../shared';
+import { Hero, RequestList } from '../shared';
 export default async function Dashboard() {
   const [data, newsletterEnabled] = await Promise.all([
     getDashboard(),
@@ -11,29 +11,23 @@ export default async function Dashboard() {
   ]);
   return (
     <>
-      <section className="admin-feature">
-        <div className="admin-feature-art" aria-hidden="true" />
-        <div className="admin-feature-body">
-          <Heading
-            title="Your work, in view."
-            subtitle="A quiet place to keep track of conversations and what comes next."
-          />
-          <div className="admin-stats">
-            <Link href="/admin/requests?status=new">
-              <strong>{data.newRequests}</strong>
-              <span>New requests</span>
-            </Link>
-            <Link href="/admin/follow-ups">
-              <strong>{data.overdueFollowUps}</strong>
-              <span>Overdue follow-ups</span>
-            </Link>
-            <Link href="/admin/customers">
-              <strong>{data.customers}</strong>
-              <span>Customers</span>
-            </Link>
-          </div>
-        </div>
-      </section>
+      <Hero
+        title="Your work, in view."
+        subtitle="A quiet place to keep track of conversations and what comes next."
+      >
+        <Link className="cx-figure" href="/admin/requests?status=new">
+          <b>{data.newRequests}</b>
+          <span>New requests</span>
+        </Link>
+        <Link className="cx-figure" href="/admin/follow-ups">
+          <b>{data.overdueFollowUps}</b>
+          <span>Overdue follow-ups</span>
+        </Link>
+        <Link className="cx-figure" href="/admin/customers">
+          <b>{data.customers}</b>
+          <span>Customers</span>
+        </Link>
+      </Hero>
       <section
         className="admin-panel admin-padded"
         aria-labelledby="newsletter-setting-title"
@@ -44,7 +38,7 @@ export default async function Dashboard() {
             {newsletterEnabled ? 'Visible' : 'Hidden'}
           </span>
         </div>
-        <p className="admin-muted">
+        <p className="cs-hint">
           Show or hide the newsletter section and its navigation links. Signups
           remain closed until the newsletter is ready.
         </p>

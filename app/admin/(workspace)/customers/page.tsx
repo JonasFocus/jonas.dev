@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Pagination, pageNumber } from '../../pagination';
 import { getCustomers } from '@/lib/crm/queries';
-import { Heading, Empty } from '../../shared';
+import { Hero, Empty } from '../../shared';
 export default async function Customers({
   searchParams,
 }: {
@@ -12,22 +12,37 @@ export default async function Customers({
   const customers = await getCustomers({ q: filters.q, page });
   return (
     <>
-      <Heading
+      <Hero
         title="Customers"
         subtitle="Contact details and the requests that started each relationship."
       />
-      <form className="admin-filters">
-        <label>
-          Search
+      <form className="cs-toolbar">
+        <label className="cx-search">
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
           <input
             name="q"
             type="search"
-            placeholder="Name, email or company"
+            placeholder="Search name, email or company"
+            aria-label="Search customers"
             defaultValue={filters.q}
             maxLength={200}
           />
         </label>
-        <button className="admin-button">Search</button>
+        <button className="cs-button" type="submit">
+          Search
+        </button>
       </form>
       <section className="admin-panel">
         {customers.length ? (
