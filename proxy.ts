@@ -17,7 +17,8 @@ export async function proxy(request: NextRequest) {
       },
     },
   });
-  await supabase.auth.getUser();
+  // Refreshes the session cookies; requireOwner() performs the authorization check.
+  await supabase.auth.getClaims();
   response.headers.set('Cache-Control', 'private, no-store');
   return response;
 }

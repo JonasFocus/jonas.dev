@@ -9,7 +9,7 @@ One owner; requests, customers, notes, follow-up dates. Collect customer email a
 - Dedicated Supabase project, not a table in another product's production database.
 - Apply supabase/migrations/202609110001_crm.sql and verify RLS/grants.
 - Disable public signup and anonymous auth. No invitation or confirmation emails. Provision a confirmed owner with scripts/provision-owner.mjs and a server-only key. Recovery password is generated to a mode-0600 ignored local file; move it into a password manager.
-- Set the exact owner UUID in ADMIN_USER_ID and public.admin_users. Both server and database enforce the owner.
+- The owner is the single row in public.admin_users, written by the provisioning script. Both server and database enforce it.
 - Set all required .env.example values independently in development/preview/production. Use a random 32-byte intake hashing secret. APP_URL must exactly match the browser origin.
 - Passkey support in Supabase is currently experimental; pinned SDK plus owner password recovery avoids lockout. Configure the RP domain and allowed HTTPS origins, then enroll two owner passkeys from /admin/security. Localhost credentials are separate from production credentials. Do not change production RP ID after enrollment.
 - Verify the intended domain is owned/connected before promotion. Root canonical metadata currently uses https://jonasinfocus.com.

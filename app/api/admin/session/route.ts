@@ -16,7 +16,7 @@ export async function POST(request: Request) {
       .select('user_id')
       .eq('user_id', user.id)
       .maybeSingle();
-    if (user.id !== process.env.ADMIN_USER_ID || !member || memberError) {
+    if (memberError || !member) {
       await supabase.auth.signOut();
       return Response.json(
         { error: 'This account does not have admin access.' },

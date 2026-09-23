@@ -18,7 +18,7 @@ Disable public signup and anonymous accounts in Supabase. Set `OWNER_EMAIL` alon
 node --env-file=.env.local scripts/provision-owner.mjs
 ```
 
-This explicitly confirms the owner account through the trusted admin API; it does not send email. The one-time recovery password is saved to `work/owner-recovery.json` with restricted permissions. Store it in your password manager, remove the file and set the printed user ID as `ADMIN_USER_ID`. The script never replaces an existing owner. It saves recovery credentials before remote account creation and can resume an interrupted setup.
+This explicitly confirms the owner account through the trusted admin API; it does not send email. The one-time recovery password is saved to `work/owner-recovery.json` with restricted permissions. Store it in your password manager and remove the file. The owner is the single row in `public.admin_users`; no environment variable is needed. The script never replaces an existing owner. It saves recovery credentials before remote account creation and can resume an interrupted setup.
 
 Sign in with the owner password, then enroll passkeys in `/admin/security`. Supabase passkeys are experimental and require explicit provider configuration. Configure the stable production RP ID and allowed origin before enrolling production credentials. Keep a recovery password and a second passkey. There are no email password-reset flows.
 
@@ -27,7 +27,7 @@ Sign in with the owner password, then enroll passkeys in `/admin/security`. Supa
 Required configuration is documented in `.env.example`:
 
 - Public Supabase URL and publishable key.
-- Server-only Supabase secret key and owner UUID.
+- Server-only Supabase secret key.
 - Exact `APP_URL` origin for request-origin checking.
 - Random 32+ character `INTAKE_HASH_SECRET` for abuse-protection hashes.
 - Optional external booking URL. Without it, visitors can still request a walkthrough through the inquiry form.
