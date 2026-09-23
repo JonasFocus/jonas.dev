@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { isPast } from 'date-fns';
 import type { RequestRecord, FollowUpRecord } from '@/lib/crm/types';
 import { AdminForm } from './forms';
+import { completeFollowUpAction } from './actions';
 
 export const statusLabels = {
   new: 'New',
@@ -132,7 +133,7 @@ export function FollowUps({ items }: { items: FollowUpRecord[] }) {
             <span className="admin-badge">Complete</span>
           ) : (
             <AdminForm
-              operation="complete"
+              action={completeFollowUpAction}
               id={item.id}
               label="Mark complete"
             />

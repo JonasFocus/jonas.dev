@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getCustomer } from '@/lib/crm/queries';
 import { AdminForm } from '../../../forms';
+import { updateCustomerAction } from '../../../actions';
 import { Heading, RequestList } from '../../../shared';
 export default async function Customer({
   params,
@@ -24,7 +25,11 @@ export default async function Customer({
       <div className="admin-detail-grid">
         <section className="admin-panel admin-padded">
           <h2>Contact details</h2>
-          <AdminForm operation="customer" id={id} label="Save customer">
+          <AdminForm
+            action={updateCustomerAction}
+            id={id}
+            label="Save customer"
+          >
             <label>
               Name
               <input
