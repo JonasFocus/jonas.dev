@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     type: 'website',
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'Jonas | Websites, SaaS & web apps',
     description:
       'Independent design and development. Work with us from idea to launch.',
