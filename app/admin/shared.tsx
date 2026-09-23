@@ -1,11 +1,14 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { isPast } from 'date-fns';
-import type { RequestRecord, FollowUpRecord } from '@/lib/crm/types';
+import type {
+  FollowUpRecord,
+  RequestRecord,
+  RequestStatus,
+} from '@/lib/crm/types';
 import { AdminForm } from './forms';
 import { completeFollowUpAction } from './actions';
 
-export const statusLabels = {
+export const statusLabels: Record<RequestStatus, string> = {
   new: 'New',
   contacted: 'Contacted',
   qualified: 'Qualified',
@@ -89,87 +92,143 @@ export function Empty({ title, body }: { title: string; body: string }) {
     </div>
   );
 }
-export function RequestList({ requests }: { requests: RequestRecord[] }) {
-  if (!requests.length)
-    return (
-      <Empty
-        title="No requests here yet"
-        body="New inquiries from your website will appear here. Try changing your filters if you expected a result."
-      />
-    );
+const statusTones: Record<RequestStatus, string | undefined> = {
+  new: 'new',
+  contacted: 'info',
+  qualified: 'ok',
+  closed: undefined,
+  spam: 'warn',
+};
+export function StatusTag({ status }: { status: RequestStatus }) {
   return (
-    <div className="admin-list">
-      {requests.map((request) => (
-        <Link
-          className="admin-request"
-          key={request.id}
-          href={`/admin/requests/${request.id}`}
-        >
-          <div>
-            <div className="admin-row-title">
-              {!request.read_at && (
-                <span className="admin-unread" aria-label="Unread" />
-              )}
-              <strong>{request.name}</strong>
-              <span className="admin-badge">
-                {statusLabels[request.status]}
-              </span>
-            </div>
-            <p>{request.company || request.email}</p>
-            <p className="admin-excerpt">{request.description}</p>
-          </div>
-          <div className="admin-request-meta">
-            <span>
-              {(request.services ?? [request.service])
-                .map((service) => service.replaceAll('-', ' '))
-                .join(' · ')}
-            </span>
-            <DateLabel value={request.created_at} />
-            <span aria-hidden="true">↗</span>
-          </div>
-        </Link>
-      ))}
-    </div>
+    <span className="cs-tag" data-tone={statusTones[status]}>
+      {statusLabels[status]}
+    </span>
   );
 }
-export function FollowUps({ items }: { items: FollowUpRecord[] }) {
-  if (!items.length)
-    return (
-      <Empty
-        title="Nothing to follow up on"
-        body="Add a follow-up from a request to keep your next step in view."
-      />
-    );
+export function serviceNames(request: RequestRecord) {
+  return (request.services ?? [request.service])
+    .map((service) => service.replaceAll('-', ' '))
+    .join(' · ');
+}
+export function RequestTable({
+  requests,
+  empty,
+}: {
+  requests: RequestRecord[];
+  empty: string;
+}) {
   return (
-    <ul className="admin-followups">
-      {items.map((item) => (
-        <li key={item.id}>
-          <div>
-            <Link href={`/admin/requests/${item.request_id}`}>
-              <strong>{item.title}</strong>
-            </Link>
-            <p
+    <table className="cx-table cr-requests">
+      {requests.length > 0 && (
+        <thead className="cx-thead">
+          <tr>
+            <th scope="col">Request</th>
+            <th scope="col">Project</th>
+            <th scope="col">Status</th>
+            <th scope="col">Received</th>
+          </tr>
+        </thead>
+      )}
+      <tbody>
+        {requests.length === 0 && (
+          <tr>
+            <td className="cx-empty" colSpan={4}>
+              {empty}
+            </td>
+          </tr>
+        )}
+        {requests.map((request) => (
+          <tr className="cx-trow" key={request.id}>
+            <td className="cs-name">
+              <Link href={`/admin/requests/${request.id}`}>
+                {!request.read_at && (
+                  <span className="cx-new">
+                    <span className="cx-dot" />
+                    <span className="cx-sr-only">Unread: </span>
+                  </span>
+                )}
+                {request.name}
+              </Link>
+              <span>{request.company || request.email}</span>
+            </td>
+            <td className="cr-services">{serviceNames(request)}</td>
+            <td>
+              <StatusTag status={request.status} />
+            </td>
+            <td className="cs-date">
+              <DateLabel value={request.created_at} />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+export function FollowUps({
+  items,
+  showRequest = false,
+}: {
+  items: FollowUpRecord[];
+  showRequest?: boolean;
+}) {
+  const now = new Date();
+  return (
+    <ul className="cx-list">
+      {items.map((item) => {
+        const overdue = !item.completed_at && new Date(item.due_at) < now;
+        return (
+          <li className="cx-row cr-followup" key={item.id}>
+            <span
               className={
-                !item.completed_at && isPast(new Date(item.due_at))
-                  ? 'admin-overdue'
-                  : ''
+                item.completed_at ? 'cx-ok' : overdue ? 'cx-bad' : 'cx-warn'
               }
             >
-              {item.completed_at ? 'Completed · ' : 'Due · '}
-              <DateLabel value={item.completed_at || item.due_at} includeTime />
-            </p>
-          </div>
-          {item.completed_at ? (
-            <span className="admin-badge">Complete</span>
-          ) : (
-            <AdminForm
-              action={completeFollowUpAction}
-              id={item.id}
-              label="Mark complete"
-            />
-          )}
+              <span className="cx-dot" />
+            </span>
+            <span className="cx-row-name">
+              {showRequest ? (
+                <Link href={`/admin/requests/${item.request_id}`}>
+                  {item.title}
+                </Link>
+              ) : (
+                item.title
+              )}
+              <em>
+                {item.completed_at
+                  ? 'Completed '
+                  : overdue
+                    ? 'Overdue, due '
+                    : 'Due '}
+                <DateLabel
+                  value={item.completed_at || item.due_at}
+                  includeTime
+                />
+              </em>
+            </span>
+            {item.completed_at ? (
+              <span className="cs-tag" data-tone="ok">
+                Complete
+              </span>
+            ) : (
+              <AdminForm
+                action={completeFollowUpAction}
+                id={item.id}
+                label="Mark complete"
+              />
+            )}
+          </li>
+        );
+      })}
+      {!items.length && (
+        <li className="cx-row cr-followup">
+          <span className="cx-idle">
+            <span className="cx-dot" />
+          </span>
+          <span className="cx-row-name">Nothing to follow up on</span>
+          <span className="cx-row-num">—</span>
         </li>
-      ))}
+      )}
     </ul>
   );
 }

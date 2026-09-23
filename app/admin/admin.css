@@ -458,7 +458,7 @@ a.cx-figure:hover span {
   transition: background-color 160ms ease;
 }
 
-.cx-row > :first-child {
+.cx-row > span:first-child {
   display: grid;
   place-items: center;
 }
@@ -753,6 +753,255 @@ a.cx-row-name:hover {
   font-variant-numeric: tabular-nums;
 }
 
+/* ── Tables ──
+   A real <table>. `display: contents` on thead, tbody and tr hands the cells
+   to the table's own grid, so each table only has to declare its columns. */
+
+.cx-table {
+  display: grid;
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.cx-table thead,
+.cx-table tbody,
+.cx-table tr {
+  display: contents;
+}
+
+.cx-table th,
+.cx-table td {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding-inline: 6px;
+  border-bottom: 1px solid var(--hair);
+}
+
+.cx-table th:first-child,
+.cx-table td:first-child {
+  padding-left: 24px;
+}
+
+.cx-table th:last-child,
+.cx-table td:last-child {
+  padding-right: 24px;
+}
+
+.cx-thead th {
+  padding-block: 12px;
+  font-size: 12px;
+  font-weight: 400;
+  text-align: left;
+  color: var(--faint);
+}
+
+.cx-table td {
+  height: 58px;
+}
+
+.cx-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.cx-trow td {
+  animation: cxIn 420ms var(--ease) both;
+  transition: background-color 160ms ease;
+}
+
+.cx-trow:hover td {
+  background: rgb(255 255 255 / 0.016);
+}
+
+.cx-table td.cx-empty {
+  grid-column: 1 / -1;
+  justify-content: center;
+  height: auto;
+  padding: 46px 20px;
+  border-bottom: 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--faint);
+}
+
+.cx-table td.cs-name {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.cs-name a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 13.5px;
+  font-weight: 500;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.cs-name > span {
+  margin-top: 2px;
+  font-size: 11.5px;
+  color: var(--faint);
+  font-family: var(--mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cs-name a > span {
+  display: inline-flex;
+}
+
+.cx-trow:hover .cs-name a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.cs-date {
+  font-size: 12.5px;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.cr-requests {
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) max-content max-content;
+}
+
+.cr-services {
+  font-size: 12.5px;
+  color: var(--dim);
+  text-transform: capitalize;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Below 640px the grid moves off the table and onto each row, so a record
+   reflows to two lines instead of squeezing four columns. */
+@media (max-width: 640px) {
+  .cx-table,
+  .cx-table tbody {
+    display: block;
+  }
+
+  .cx-table thead {
+    display: none;
+  }
+
+  .cx-table tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 5px 12px;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--hair);
+  }
+
+  .cx-table tr:last-child {
+    border-bottom: 0;
+  }
+
+  .cx-table td,
+  .cx-table td:first-child,
+  .cx-table td:last-child {
+    height: auto;
+    padding: 0;
+    border-bottom: 0;
+  }
+
+  .cx-table td.cs-name {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .cx-table td.cx-empty {
+    padding: 46px 20px;
+  }
+
+  .cr-requests td:is(.cr-services, .cs-date) {
+    justify-content: flex-end;
+  }
+}
+
+.cx-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── Record pages ── */
+
+.cs-fact {
+  grid-template-columns: 130px minmax(0, 1fr);
+}
+
+.cs-fact .cx-row-name {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.cr-prose {
+  white-space: pre-wrap;
+  font-size: 13.5px;
+  line-height: 1.65;
+}
+
+.cr-note {
+  display: grid;
+  gap: 6px;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--hair);
+  font-size: 12px;
+  color: var(--faint);
+  animation: cxIn 400ms var(--ease) both;
+}
+
+.cr-note .cr-prose {
+  color: var(--ink);
+}
+
+.cr-compose {
+  margin-top: 14px;
+}
+
+.cr-followup {
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+}
+
+.cr-followup .cx-row-name {
+  white-space: normal;
+}
+
+.cr-followup .cx-row-name em {
+  display: block;
+  margin: 2px 0 0;
+}
+
+.cr-followup .cx-row-name a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 560px) {
+  .cs-fact {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+
+  .cs-fact .cx-row-note {
+    display: block;
+  }
+}
+
 /* ── Panels and forms ── */
 
 .cs-panel {
@@ -969,7 +1218,7 @@ a.cx-row-name:hover {
 
 /* Content styles for pages not yet on the console layout. */
 
-.cx-hero + :is(.admin-panel, .admin-detail-grid),
+.cx-hero + .admin-panel,
 .admin-panel + .admin-panel {
   margin-top: 24px;
 }
@@ -994,11 +1243,6 @@ a.cx-row-name:hover {
 }
 .admin-padded .cs-form {
   margin-top: 18px;
-}
-.admin-notes small,
-.admin-activity small {
-  font-size: 12px;
-  color: var(--faint);
 }
 .admin-section-heading {
   display: flex;
@@ -1040,12 +1284,6 @@ a.cx-row-name:hover {
   color: #9a9aa4;
   font-size: 13px;
 }
-.admin-row-title {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 9px;
-}
 .admin-badge {
   display: inline-block;
   flex: 0 0 auto;
@@ -1059,32 +1297,6 @@ a.cx-row-name:hover {
   background: #24212f;
   letter-spacing: 0.025em;
 }
-.admin-unread {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #a79bf4;
-}
-.admin-request-meta {
-  flex-shrink: 0;
-  display: grid;
-  align-content: start;
-  justify-items: end;
-  gap: 4px;
-  font-size: 11px;
-  color: #9a9aa4;
-  text-transform: capitalize;
-}
-.admin-excerpt {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  max-width: 65ch;
-}
-.admin-muted {
-  color: var(--admin-muted);
-}
 .admin-empty {
   padding: 46px 24px;
   text-align: center;
@@ -1095,99 +1307,13 @@ a.cx-row-name:hover {
   margin: 9px auto 0;
   font-size: 13px;
 }
-.admin-detail-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr);
-  align-items: start;
-  gap: 24px;
-}
-.admin-stack {
-  display: grid;
-  gap: 24px;
-}
-.admin-prose {
-  white-space: pre-wrap;
-  line-height: 1.8;
-}
-.admin-facts {
-  display: grid;
-  gap: 18px;
-  border-top: 1px solid #212124;
-  padding-top: 24px;
-  margin-top: 28px;
-}
-.admin-facts dt {
-  color: var(--admin-muted);
-  font-size: 11px;
-  margin-bottom: 4px;
-}
-.admin-facts dd {
-  margin: 0;
-}
-.admin-notes article {
-  padding: 18px 0;
-  border-bottom: 1px solid #212124;
-}
-.admin-notes small {
-  display: block;
-  margin-top: 10px;
-}
-.admin-followups,
-.admin-activity {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-.admin-followups li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 14px;
-  padding: 18px 0;
-  border-bottom: 1px solid #212124;
-}
-.admin-followups li:last-child {
-  border-bottom: 0;
-}
-.admin-followups p {
-  color: var(--admin-muted);
-  font-size: 12px;
-  margin-top: 5px;
-}
-.admin-followups .cs-form {
-  flex-shrink: 0;
-}
-.admin-followups a {
-  text-decoration: underline;
-  text-decoration-color: #63636d;
-  text-underline-offset: 4px;
-}
-.admin-followups .admin-overdue {
-  color: #d9b694;
-}
-.admin-activity li {
-  padding: 10px 0;
-}
-.admin-activity p {
-  text-transform: capitalize;
-  font-size: 13px;
-}
 @media (max-width: 760px) {
-  .admin-detail-grid {
-    grid-template-columns: 1fr;
-  }
   .admin-padded {
     padding: 20px;
   }
   .admin-request {
     gap: 12px;
     padding: 18px 20px;
-  }
-  .admin-request-meta {
-    max-width: 90px;
-  }
-  .admin-followups li {
-    flex-wrap: wrap;
   }
   .admin-section-heading {
     padding: 16px 20px;
