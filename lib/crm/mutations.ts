@@ -117,12 +117,13 @@ export async function updateCustomer(input: {
     input,
   );
   const { supabase } = await requireOwner();
-  checked(
-    await supabase
-      .from('customers')
-      .update({ ...data, company: data.company || null })
-      .eq('id', id)
-      .select('id')
-      .single(),
-  );
+  const result = await supabase
+    .from('customers')
+    .update({ ...data, company: data.company || null })
+    .eq('id', id)
+    .select('id')
+    .single();
+  if (result.error?.code === '23505')
+    throw new Error('Another customer already uses this email address.');
+  checked(result);
 }
