@@ -22,27 +22,24 @@ export default async function FollowUpPage({
             : 'Your next steps, with the closest due dates first. Dates are shown in Central time.'
         }
       />
-      <nav aria-label="Follow-up status" className="admin-view-tabs">
+      <nav aria-label="Follow-up status" className="cs-toolbar">
         <Link
+          className="cs-filter"
           href="/admin/follow-ups"
           aria-current={!completed ? 'page' : undefined}
         >
           Open
         </Link>
         <Link
+          className="cs-filter"
           href="/admin/follow-ups?view=completed"
           aria-current={completed ? 'page' : undefined}
         >
           Completed
         </Link>
+        <span className="cs-count">{Math.min(items.length, 50)} shown</span>
       </nav>
-      <section className="admin-panel admin-padded">
-        <div className="admin-section-heading">
-          <h2>{completed ? 'Completed' : 'To do'}</h2>
-          <span>{Math.min(items.length, 50)} shown</span>
-        </div>
-        <FollowUps items={items.slice(0, 50)} showRequest />
-      </section>
+      <FollowUps items={items.slice(0, 50)} showRequest />
       <Pagination
         path="/admin/follow-ups"
         page={page}

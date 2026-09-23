@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Pagination, pageNumber } from '../../pagination';
 import { getCustomers } from '@/lib/crm/queries';
-import { Hero, SearchIcon, Empty } from '../../shared';
+import { DateLabel, Hero, SearchIcon } from '../../shared';
 export default async function Customers({
   searchParams,
 }: {
@@ -10,9 +10,11 @@ export default async function Customers({
   const filters = await searchParams;
   const page = pageNumber(filters.page);
   const customers = await getCustomers({ q: filters.q, page });
+  const visible = customers.slice(0, 50);
   return (
     <>
       <Hero
+        tone="warm"
         title="Customers"
         subtitle="Contact details and the requests that started each relationship."
       />
@@ -31,31 +33,56 @@ export default async function Customers({
         <button className="cs-button" type="submit">
           Search
         </button>
-      </form>
-      <section className="admin-panel">
-        {customers.length ? (
-          <div className="admin-list">
-            {customers.slice(0, 50).map((customer) => (
-              <Link
-                key={customer.id}
-                href={`/admin/customers/${customer.id}`}
-                className="admin-request"
-              >
-                <div>
-                  <strong>{customer.name}</strong>
-                  <p>{customer.company || customer.email}</p>
-                </div>
-                <span className="admin-badge">{customer.status}</span>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <Empty
-            title="No customers yet"
-            body="Convert a request to a customer when you start working together."
-          />
+        {filters.q && (
+          <Link className="cs-quiet-link" href="/admin/customers">
+            Clear
+          </Link>
         )}
-      </section>
+        <span className="cs-count">{visible.length} shown</span>
+      </form>
+      <table className="cx-table cr-customers">
+        {visible.length > 0 && (
+          <thead className="cx-thead">
+            <tr>
+              <th scope="col">Customer</th>
+              <th scope="col">Status</th>
+              <th scope="col">Since</th>
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {visible.length === 0 && (
+            <tr>
+              <td className="cx-empty" colSpan={3}>
+                {filters.q
+                  ? `No customer matches “${filters.q}”.`
+                  : 'Convert a request to a customer when you start working together.'}
+              </td>
+            </tr>
+          )}
+          {visible.map((customer) => (
+            <tr className="cx-trow" key={customer.id}>
+              <td className="cs-name">
+                <Link href={`/admin/customers/${customer.id}`}>
+                  {customer.name}
+                </Link>
+                <span>{customer.company || customer.email}</span>
+              </td>
+              <td>
+                <span
+                  className="cs-tag"
+                  data-tone={customer.status === 'active' ? 'ok' : undefined}
+                >
+                  {customer.status === 'active' ? 'Active' : 'Inactive'}
+                </span>
+              </td>
+              <td className="cs-date">
+                <DateLabel value={customer.created_at} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <Pagination
         path="/admin/customers"
         page={page}

@@ -84,14 +84,6 @@ export function SearchIcon() {
     </svg>
   );
 }
-export function Empty({ title, body }: { title: string; body: string }) {
-  return (
-    <div className="admin-empty">
-      <h3>{title}</h3>
-      <p>{body}</p>
-    </div>
-  );
-}
 const statusTones: Record<RequestStatus, string | undefined> = {
   new: 'new',
   contacted: 'info',

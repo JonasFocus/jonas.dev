@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { getCustomer } from '@/lib/crm/queries';
 import { AdminForm } from '../../../forms';
 import { updateCustomerAction } from '../../../actions';
-import { Hero, RequestTable } from '../../../shared';
+import { DateLabel, Hero, RequestTable } from '../../../shared';
 export default async function Customer({
   params,
 }: {
@@ -19,17 +19,47 @@ export default async function Customer({
         <Link href="/admin/customers">← All customers</Link>
       </p>
       <Hero
+        tone="cool"
+        status={
+          <>
+            <span
+              className="cs-tag"
+              data-tone={customer.status === 'active' ? 'ok' : undefined}
+            >
+              {customer.status === 'active' ? 'Active' : 'Inactive'}
+            </span>
+            {customer.email}
+          </>
+        }
         title={customer.name}
-        subtitle={customer.company || customer.email}
-      />
-      <div className="admin-detail-grid">
-        <section className="admin-panel admin-padded">
-          <h2>Contact details</h2>
-          <AdminForm
-            action={updateCustomerAction}
-            id={id}
-            label="Save customer"
-          >
+        subtitle={
+          <>
+            {customer.company || 'No company on file'} · customer since{' '}
+            <DateLabel value={customer.created_at} />
+          </>
+        }
+      >
+        <span className="cx-figure">
+          <b>{requests.length}</b>
+          <span>{requests.length === 1 ? 'request' : 'requests'}</span>
+        </span>
+        <span className="cx-figure">
+          <b>
+            {
+              requests.filter(
+                (request) =>
+                  request.status !== 'closed' && request.status !== 'spam',
+              ).length
+            }
+          </b>
+          <span>open</span>
+        </span>
+      </Hero>
+
+      <h2 className="cx-label">Contact details</h2>
+      <div className="cs-panel">
+        <AdminForm action={updateCustomerAction} id={id} label="Save customer">
+          <div className="cs-form-grid">
             <label className="cs-field">
               <span>Name</span>
               <input
@@ -67,18 +97,15 @@ export default async function Customer({
                 <option value="inactive">Inactive</option>
               </select>
             </label>
-          </AdminForm>
-        </section>
-        <section className="admin-panel">
-          <div className="admin-section-heading">
-            <h2>Related requests</h2>
           </div>
-          <RequestTable
-            requests={requests}
-            empty="No requests are linked to this customer."
-          />
-        </section>
+        </AdminForm>
       </div>
+
+      <h2 className="cx-label">Related requests</h2>
+      <RequestTable
+        requests={requests}
+        empty="No requests are linked to this customer."
+      />
     </>
   );
 }
