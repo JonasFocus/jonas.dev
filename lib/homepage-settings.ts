@@ -1,9 +1,11 @@
 import 'server-only';
 import { createClient } from '@supabase/supabase-js';
+import { revalidateTag } from 'next/cache';
 import { requireOwner } from '@/lib/crm/auth';
 import { z } from 'zod';
 
 const settingsSchema = z.object({ newsletter_enabled: z.boolean() });
+const settingsTag = 'homepage-settings';
 
 export async function getNewsletterEnabled() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -12,7 +14,12 @@ export async function getNewsletterEnabled() {
   const client = createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
     global: {
-      fetch: (input, init) => fetch(input, { ...init, cache: 'no-store' }),
+      // Toggles revalidate the tag; the hourly window only recovers from a failed read.
+      fetch: (input, init) =>
+        fetch(input, {
+          ...init,
+          next: { revalidate: 3600, tags: [settingsTag] },
+        }),
     },
   });
   try {
@@ -51,4 +58,5 @@ export async function setNewsletterEnabled(value: string) {
     .single();
   if (error || settingsSchema.parse(data).newsletter_enabled !== enabled)
     throw new Error('Could not save newsletter visibility. Please try again.');
+  revalidateTag(settingsTag, { expire: 0 });
 }

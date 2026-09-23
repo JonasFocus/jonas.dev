@@ -1,4 +1,3 @@
-import { connection } from 'next/server';
 import { getNewsletterEnabled } from '@/lib/homepage-settings';
 import { Pricing } from './pricing';
 import { Newsletter } from './newsletter';
@@ -14,7 +13,6 @@ import './reference.css';
 import './new.css';
 
 export default async function HomePage() {
-  await connection();
   const newsletterEnabled = await getNewsletterEnabled();
   return (
     <PageShell>
