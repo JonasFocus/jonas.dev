@@ -32,10 +32,7 @@ export async function setNewsletterAction(
   _previous: ActionState,
   data: FormData,
 ) {
-  return save(async () => {
-    await setNewsletterEnabled(field(data, 'enabled'));
-    revalidatePath('/');
-  });
+  return save(() => setNewsletterEnabled(field(data, 'enabled')));
 }
 
 export async function updateRequestStatusAction(

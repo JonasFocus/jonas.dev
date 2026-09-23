@@ -1,4 +1,5 @@
 import 'server-only';
+import { z } from 'zod';
 import { requireOwner } from './auth';
 import {
   activityRecordSchema,
@@ -130,33 +131,116 @@ export async function getFollowUps(
   fail(error);
   return followUpRecordSchema.array().parse(data);
 }
-export async function getDashboard() {
+const withRequestName = {
+  requests: z.object({ name: z.string() }).nullable(),
+};
+const attentionFollowUpSchema = followUpRecordSchema.extend(withRequestName);
+const feedEventSchema = activityRecordSchema.extend(withRequestName);
+
+// ponytail: fixed-offset math, so "today" can be an hour off on DST change days.
+function endOfTodayIn(timeZone: string, now: Date) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hourCycle: 'h23',
+  }).formatToParts(now);
+  const part = (type: string) =>
+    Number(parts.find((entry) => entry.type === type)?.value ?? 0);
+  const elapsed =
+    ((part('hour') * 60 + part('minute')) * 60 + part('second')) * 1000 +
+    now.getMilliseconds();
+  return new Date(now.getTime() - elapsed + 86_400_000);
+}
+
+export async function getOverview() {
   const { supabase } = await requireOwner();
-  const [r, f, c, recent] = await Promise.all([
-    supabase
-      .from('requests')
-      .select('id', { count: 'exact', head: true })
-      .eq('status', 'new'),
+  const now = new Date();
+  const nowIso = now.toISOString();
+  const endOfToday = endOfTodayIn('America/Chicago', now).toISOString();
+  const monthAgo = new Date(now.getTime() - 30 * 86_400_000).toISOString();
+  const countRequests = () =>
+    supabase.from('requests').select('id', { count: 'exact', head: true });
+  const countOpenFollowUps = () =>
     supabase
       .from('follow_ups')
       .select('id', { count: 'exact', head: true })
-      .is('completed_at', null)
-      .lt('due_at', new Date().toISOString()),
+      .is('completed_at', null);
+  const [
+    unread,
+    newCount,
+    contacted,
+    qualified,
+    overdue,
+    dueToday,
+    customers,
+    conversions,
+    unreadList,
+    dueList,
+    feed,
+  ] = await Promise.all([
+    countRequests().is('read_at', null).neq('status', 'spam'),
+    countRequests().eq('status', 'new'),
+    countRequests().eq('status', 'contacted'),
+    countRequests().eq('status', 'qualified'),
+    countOpenFollowUps().lt('due_at', nowIso),
+    countOpenFollowUps().gte('due_at', nowIso).lt('due_at', endOfToday),
     supabase
       .from('customers')
       .select('id', { count: 'exact', head: true })
       .eq('status', 'active'),
     supabase
+      .from('activity_events')
+      .select('id', { count: 'exact', head: true })
+      .eq('action', 'Converted to customer')
+      .gte('created_at', monthAgo),
+    supabase
       .from('requests')
       .select(requestColumns)
+      .is('read_at', null)
+      .neq('status', 'spam')
       .order('created_at', { ascending: false })
-      .limit(6),
+      .limit(5),
+    supabase
+      .from('follow_ups')
+      .select('*, requests(name)')
+      .is('completed_at', null)
+      .lt('due_at', endOfToday)
+      .order('due_at')
+      .limit(5),
+    supabase
+      .from('activity_events')
+      .select('*, requests(name)')
+      .order('created_at', { ascending: false })
+      .limit(8),
   ]);
-  [r, f, c, recent].forEach((result) => fail(result.error));
+  [
+    unread,
+    newCount,
+    contacted,
+    qualified,
+    overdue,
+    dueToday,
+    customers,
+    conversions,
+    unreadList,
+    dueList,
+    feed,
+  ].forEach((result) => fail(result.error));
   return {
-    newRequests: r.count ?? 0,
-    overdueFollowUps: f.count ?? 0,
-    customers: c.count ?? 0,
-    recentRequests: requestRecordSchema.array().parse(recent.data),
+    counts: {
+      unread: unread.count ?? 0,
+      new: newCount.count ?? 0,
+      contacted: contacted.count ?? 0,
+      qualified: qualified.count ?? 0,
+      overdue: overdue.count ?? 0,
+      dueToday: dueToday.count ?? 0,
+      customers: customers.count ?? 0,
+      conversions: conversions.count ?? 0,
+    },
+    unreadRequests: requestRecordSchema.array().parse(unreadList.data),
+    dueFollowUps: attentionFollowUpSchema.array().parse(dueList.data),
+    activity: feedEventSchema.array().parse(feed.data),
   };
 }
