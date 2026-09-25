@@ -1,75 +1,129 @@
-# Jonas website and private admin
+# jonasinfocus.com
 
-Next.js 16, TypeScript, Supabase Postgres/Auth. The public website accepts project inquiries; the owner manages requests, customers, internal notes and follow-ups at `/admin`. Customer email is contact data only. The application sends no email; new inquiries can optionally post an alert to a Slack channel.
+This repo holds the jonasinfocus.com marketing site and a private CRM at `/admin`. Visitors send project inquiries through a form on the homepage. One owner reviews them in the CRM.
 
-## Development
+Stack: Next.js 16 (App Router), TypeScript, Supabase (Postgres and Auth), Tailwind v4, Vercel.
 
-Use Node.js 24 or newer. Run `npm ci`, copy `.env.example` to `.env.local`, configure the dedicated Supabase project, then run `npm run dev`. The website runs at `http://localhost:3000`; `/new` permanently redirects to `/`.
+## Quick start
 
-The website and login render without Supabase configuration, but saving requests and signing in are unavailable until configured. There is no mock database or public admin bypass.
-
-## Database and owner setup
-
-Apply `supabase/migrations/202609110001_crm.sql` to the dedicated project's database. It creates customer/request/note/follow-up/activity tables, owner membership, database policies, durable intake rate limits and atomic submission/customer-conversion functions.
-
-Disable public signup and anonymous accounts in Supabase. Set `OWNER_EMAIL` alongside the Supabase configuration, then run:
+You need Node 24.
 
 ```sh
-node --env-file=.env.local scripts/provision-owner.mjs
+npm ci
+cp .env.example .env.local   # then fill in the values listed under Environment
+npm run dev                  # serves http://localhost:3000
 ```
 
-This explicitly confirms the owner account through the trusted admin API; it does not send email. The one-time recovery password is saved to `work/owner-recovery.json` with restricted permissions. Store it in your password manager and remove the file. The owner is the single row in `public.admin_users`; no environment variable is needed. The script never replaces an existing owner. It saves recovery credentials before remote account creation and can resume an interrupted setup.
+The homepage renders without Supabase. The inquiry form and the admin need it.
 
-Sign in with the owner password, then enroll passkeys in `/admin/security`. Supabase passkeys are experimental and require explicit provider configuration. Configure the stable production RP ID and allowed origin before enrolling production credentials. Keep a recovery password and a second passkey. There are no email password-reset flows.
+### Database and owner
+
+1. Create a dedicated Supabase project. Turn off public signup and anonymous sign-ins.
+2. Apply every file in `supabase/migrations/` in filename order.
+3. Set `OWNER_EMAIL` in `.env.local`, then run the provisioning script:
+
+   ```sh
+   node --env-file=.env.local scripts/provision-owner.mjs
+   ```
+
+   The script creates a confirmed user without sending email and inserts the only row in `admin_users`. It writes a generated recovery password to `work/owner-recovery.json` with mode 0600. Git ignores that folder. Copy the password to a password manager and delete the file. You can rerun the script safely. It never replaces an existing owner.
+
+4. Sign in at `/admin/login` with the password, then add passkeys at `/admin/security`. Keep the recovery password and a second passkey, because there is no email reset flow.
 
 ## Environment
 
-Required configuration is documented in `.env.example`:
+| Variable                                                | Scope  | Required   | Purpose                                                                                         |
+| ------------------------------------------------------- | ------ | ---------- | ----------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`                              | public | yes        | Supabase project URL. The CSP `connect-src` also allows it.                                     |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`                  | public | yes        | Admin sign-in sessions and the public homepage settings read.                                   |
+| `SUPABASE_SECRET_KEY`                                   | server | yes        | Saving inquiries, `/api/health`, and owner provisioning.                                        |
+| `APP_URL`                                               | server | yes        | Exact origin with no trailing slash. The API accepts requests only from it. Slack links use it. |
+| `INTAKE_HASH_SECRET`                                    | server | yes        | At least 32 random characters. The API uses it to hash IPs and emails for rate limiting.        |
+| `SLACK_WEBHOOK_URL`                                     | server | no         | Posts each new inquiry to Slack. Leave it empty to send no alerts.                              |
+| `DEPLOYMENT_ORIGIN`                                     | server | no         | One more accepted origin, such as a Vercel URL before the custom domain is linked.              |
+| `OWNER_EMAIL`                                           | script | setup only | Only `scripts/provision-owner.mjs` reads it.                                                    |
+| `E2E_OWNER_EMAIL`, `E2E_OWNER_PASSWORD`, `E2E_BASE_URL` | test   | e2e only   | Only Playwright reads them. The base URL defaults to `http://localhost:3000`.                   |
 
-- Public Supabase URL and publishable key.
-- Server-only Supabase secret key.
-- Exact `APP_URL` origin for request-origin checking.
-- Random 32+ character `INTAKE_HASH_SECRET` for abuse-protection hashes.
-- Optional external booking URL. Without it, visitors can still request a walkthrough through the inquiry form.
-- Optional server-only `SLACK_WEBHOOK_URL` (a Slack Incoming Webhook). When set, each new inquiry posts the contact details, a short brief and a link to it in `/admin`. Retries of the same submission do not post again. When unset, no alert is sent.
+On Vercel, the API also accepts the origins in `VERCEL_URL` and `VERCEL_PROJECT_PRODUCTION_URL`, and reads the client IP from `x-vercel-forwarded-for`. Outside Vercel, every request counts against the same rate limit.
 
-Use independent preview/production databases and secrets. Never expose the Supabase secret key to browser code. No email provider is required.
+Give each environment its own database and secrets. Never add the `NEXT_PUBLIC_` prefix to a server secret.
 
-## Verification
+## Commands
 
-```sh
-npm run lint
-npm run typecheck
-npm test
-npm run build
-npm audit --omit=dev
+| Command             | What it does                                                                              |
+| ------------------- | ----------------------------------------------------------------------------------------- |
+| `npm run dev`       | Starts the dev server.                                                                    |
+| `npm run lint`      | Runs oxlint with type-aware rules.                                                        |
+| `npm run format`    | Formats with oxfmt.                                                                       |
+| `npm run typecheck` | Generates route types, then runs `tsc --noEmit`.                                          |
+| `npm test`          | Runs validation and Slack tests, and runs the real migrations and RLS policies in PGlite. |
+| `npm run test:e2e`  | Runs Playwright against a running app and a real Supabase project.                        |
+| `npm run build`     | Builds for production.                                                                    |
+
+CI (`.github/workflows/verify.yml`) runs lint, typecheck, tests, build, and `npm audit --omit=dev --audit-level=high` on every push and pull request. CI does not run the e2e tests.
+
+The e2e specs (`workflow`, `passkey`, `newsletter`) create fictional records and delete them afterwards. Start the app before running them, and point them only at a test environment. A spec fails if configuration is missing. It does not skip.
+
+## How it works
+
+### Inquiries
+
+The form in `components/inquiry-form.tsx` posts to `POST /api/requests`. That route calls the `submit_request()` function in Postgres.
+
+- The route rejects requests from other origins, non-JSON bodies, bodies over 16 KB, unknown fields, and submissions that fill the hidden honeypot field.
+- The route hashes the IP and email with HMAC before sending them to the database.
+- `submit_request()` runs as one transaction. Every form submission carries a `submissionId`.
+  - A retry with the same id and content returns the existing request.
+  - A retry with the same id and different content gets a 409.
+  - More than 10 submissions per IP or 3 per email in an hour get a 429.
+- A new request sends a Slack alert after the response goes out. A retry sends nothing.
+
+### Admin
+
+- `proxy.ts` refreshes the Supabase session on `/admin/*` and sets `Cache-Control: private, no-store`. It does not check who the user is.
+- `requireOwner()` in `lib/crm/auth.ts` does that check. It calls `getUser()`, then looks the user up in `admin_users`. Every query and mutation calls it first.
+- Row-level security repeats the owner check on every table. A bug in app code still cannot expose data to anyone else.
+- Server actions in `app/admin/actions.ts` call `lib/crm/mutations.ts` through `save()`. `save()` returns `{ error }` or `{ success }` and revalidates `/admin`.
+- Database triggers write the activity log. App code never writes to it.
+- `convert_request()` turns a request into a customer in one transaction. Converting the same request twice returns the same customer. Customer emails are unique, ignoring case.
+
+### Newsletter toggle
+
+The homepage shows the newsletter section only when `homepage_settings.newsletter_enabled` is true. The owner turns it on or off from the admin overview. Next.js caches the public read for up to an hour. Saving the toggle clears that cache with `revalidateTag('homepage-settings')`.
+
+## Layout
+
+```
+app/
+  _home/            homepage sections, styles, and shader
+  admin/            login, workspace pages, server actions, and admin UI
+  api/requests      public inquiry endpoint
+  api/admin/session owner check after sign-in
+  api/health        config and owner check for uptime monitors
+  privacy/          privacy policy
+  new/              permanent redirect to /
+components/         inquiry form and dialog
+lib/crm/            auth, queries, mutations, validation, Slack alerts, origin check
+lib/supabase/       server and browser session clients, and the server-only intake client
+lib/homepage-settings.ts
+proxy.ts            admin session refresh
+next.config.ts      CSP and security headers
+supabase/migrations/
+scripts/            owner provisioning
+tests/              node:test suites, with Playwright specs in e2e/
 ```
 
-The GitHub verification workflow runs lint, types, database tests, build, and the production dependency audit on pull requests.
+## Conventions
 
-`npm test` executes validation and real Postgres SQL/RLS tests through PGlite. These tests cover anonymous/non-owner denial, retries, rate limits, status changes, notes, follow-ups and idempotent customer conversion.
+- Next.js 16 changed many APIs. Read the matching guide in `node_modules/next/dist/docs/` before using an API you don't know (see `AGENTS.md`).
+- All data access goes through `lib/crm/queries.ts` and `lib/crm/mutations.ts`. Modules that touch data import `server-only`.
+- Validate request bodies, form data, and database rows with zod.
+- Admin styles live in `app/admin/admin.css`, scoped under `.cx`. Homepage styles live in `app/_home/*.css` and `app/globals.css`.
+- To change the schema, add a new migration file. Never edit one that has been applied.
 
-`npm run test:e2e` runs the actual website → API → database → owner admin workflow. It requires a running configured app and `E2E_OWNER_EMAIL`, `E2E_OWNER_PASSWORD`, `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Optionally set `E2E_BASE_URL`. It creates and cleans up fictional records. Run only against an explicitly selected test environment.
+## Deploy
 
-The browser test fails when configuration is missing; it does not silently skip or mock successful storage/auth.
-
-## Deployment
-
-Deploy the Next.js app to Vercel, configure environment variables per environment, apply the database migration, provision the owner and verify `/api/health`. That endpoint checks basic configuration and owner membership; it is not a substitute for testing public intake and authenticated access.
-
-Complete every gate in `docs/production-checklist.md` before production promotion, including domain, real auth, backup restore, noindex admin pages, mobile/keyboard checks and rollback. Do not infer deployment completion from a successful local build.
-
-## Structure
-
-- `app/_home/home.tsx` and related components: public homepage at `/` (`/new` redirects here).
-- `components/inquiry-form.tsx`: accessible inquiry form and dialog.
-- `app/api/requests`: bounded validation and rate-limited persistence.
-- `app/admin`: private dashboard, inbox, customers, notes, follow-ups and login.
-- `lib/crm`: authorization, queries, mutations and boundary validation.
-- `lib/supabase`: server/browser session clients; privileged intake client stays server-only.
-- `supabase/migrations`: reproducible schema and permissions.
-- `tests`: database and browser verification.
-
-## Design assets
-
-The older custom sections are retained from the existing redesign. The component catalog's private registry uses an environment-variable reference, never an embedded token. No registry token is required to run the site. Concepts and illustrative data remain labeled; replace them with approved work when available.
+1. Set the environment variables for each Vercel environment.
+2. Apply new migrations to that environment's database.
+3. Deploy, then confirm `/api/health` returns 200. That check covers configuration and the single owner row. It does not prove that inquiries or sign-in work.
+4. Before promoting to production, complete [docs/production-checklist.md](docs/production-checklist.md).
