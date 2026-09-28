@@ -409,7 +409,7 @@ html:has(.meridian-page) {
   scroll-margin-top: 6rem;
 }
 .meridian-page .pricing-intro {
-  max-width: 28rem;
+  max-width: 40rem;
   margin: 0 auto 36px;
   text-align: center;
 }

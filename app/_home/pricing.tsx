@@ -23,8 +23,13 @@ export function Pricing() {
     >
       <div className="pricing-intro">
         <span className="pricing-kicker">Prices</span>
-        <h2 id="pricing-title">Two ways to get a website.</h2>
-        <p>Pay a little each month, or have us build the whole thing.</p>
+        <h2 id="pricing-title">
+          A website that works for your business. Without lifting a finger.
+        </h2>
+        <p>
+          We build it, host it, and improve it every month. Leave anytime and
+          keep it.
+        </p>
       </div>
 
       <div className="pricing-pair">
