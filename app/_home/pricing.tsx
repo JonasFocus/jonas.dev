@@ -37,9 +37,7 @@ export function Pricing() {
             <span>$297</span>
             <small>a month</small>
           </p>
-          <p className="pricing-setup">
-            Plus <strong>$499</strong> once, to set it up.
-          </p>
+          <p className="pricing-setup">+ one-time setup fee</p>
           <p className="pricing-note">
             Pay 4 months now ($1,188) and get 6 months of hosting ($1,782
             value).
