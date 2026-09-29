@@ -285,10 +285,12 @@ export function Faq() {
               </button>
               <div
                 id={`answer-${index}`}
-                hidden={open !== index}
-                className="faq-answer-new"
+                inert={open !== index}
+                className="faq-panel"
               >
-                {answer}
+                <div className="faq-answer-new">
+                  <p>{answer}</p>
+                </div>
               </div>
             </div>
           ))}
