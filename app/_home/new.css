@@ -12,6 +12,25 @@
 }
 .meridian-page[data-theme='light'] {
   color-scheme: light;
+  /* Default light --fg-muted only reaches 3.6:1 on the page background. */
+  --fg-muted: #4e5459;
+}
+.meridian-page .skip-link {
+  position: absolute;
+  left: 16px;
+  top: 0;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 0 0 12px 12px;
+  background: var(--foreground);
+  color: var(--background);
+  font-size: 14px;
+  font-weight: 500;
+  transform: translateY(-120%);
+  transition: transform 0.2s ease;
+}
+.meridian-page .skip-link:focus-visible {
+  transform: translateY(0);
 }
 .meridian-page .review-pill-placement {
   margin-bottom: 16px;
@@ -25,7 +44,8 @@
   padding: 9px 14px;
   border-radius: 999px;
   background: color-mix(in srgb, var(--foreground) 4%, var(--background));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 10%, transparent);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--foreground) 10%, transparent);
   font-size: 12px;
   line-height: 1.5;
 }
@@ -399,7 +419,7 @@ html:has(.meridian-page) {
   color: var(--muted-foreground);
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: .1em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 .meridian-page .newsletter-card h2 {
@@ -443,7 +463,9 @@ html:has(.meridian-page) {
   font-weight: 600;
   cursor: not-allowed;
 }
-.meridian-page .newsletter-card .newsletter-status { font-size: 12px; }
+.meridian-page .newsletter-card .newsletter-status {
+  font-size: 12px;
+}
 .meridian-page .pricing-section {
   width: min(920px, calc(100% - 48px));
   margin: 8px auto 72px;
@@ -487,7 +509,8 @@ html:has(.meridian-page) {
   overflow: hidden;
   border-radius: 28px;
   background: color-mix(in srgb, var(--foreground) 4%, var(--background));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 9%, transparent);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--foreground) 9%, transparent);
 }
 .meridian-page .pricing-pane {
   display: flex;
@@ -497,7 +520,8 @@ html:has(.meridian-page) {
 }
 .meridian-page .pricing-pane.is-enterprise {
   background: color-mix(in srgb, var(--foreground) 3.5%, transparent);
-  box-shadow: inset 1px 0 0 color-mix(in srgb, var(--foreground) 8%, transparent);
+  box-shadow: inset 1px 0 0
+    color-mix(in srgb, var(--foreground) 8%, transparent);
 }
 .meridian-page .pricing-pane h3 {
   margin: 0;
@@ -648,9 +672,12 @@ html:has(.meridian-page) {
     padding: 28px 24px 24px;
   }
   .meridian-page .pricing-pane.is-enterprise {
-    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--foreground) 8%, transparent);
+    box-shadow: inset 0 1px 0
+      color-mix(in srgb, var(--foreground) 8%, transparent);
   }
 }
 @media (max-width: 640px) {
-  .meridian-page .newsletter-card { padding: 20px; }
+  .meridian-page .newsletter-card {
+    padding: 20px;
+  }
 }

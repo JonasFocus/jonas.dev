@@ -1,3 +1,4 @@
+import { InquiryButton } from '@/components/inquiry-form';
 import { Contents } from './contents';
 
 export function Planning() {
@@ -20,29 +21,10 @@ export function Planning() {
               }
             </p>
             <div className="mt-8">
-              <a
+              <InquiryButton
                 className="inline-flex items-center justify-center font-medium select-none transition-colors disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-12 gap-2 px-6 text-base rounded-full"
-                href="#contact"
-                tabIndex={0}
-              >
-                {'Discuss your project'}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-arrow-right size-4"
-                  aria-hidden="true"
-                >
-                  <path d="M5 12h14" />
-                  <path d="m12 5 7 7-7 7" />
-                </svg>
-              </a>
+                label="Discuss your project"
+              />
             </div>
           </div>
           <Contents />

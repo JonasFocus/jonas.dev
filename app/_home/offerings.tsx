@@ -24,13 +24,13 @@ export function Offerings() {
     <section id="services" className="w-full scroll-mt-24 px-4 py-24 sm:px-8">
       <div className="mx-auto w-full max-w-6xl">
         <span className="inline-flex items-center rounded-full border border-border/60 bg-card px-3 py-1 font-medium text-muted-foreground text-xs">
-          {'What I build'}
+          {'What we build'}
         </span>
         <h2 className="mt-5 text-balance font-serif text-4xl text-foreground leading-[1.05] sm:text-5xl">
           {'Three kinds of projects.'}
         </h2>
         <p className="mt-5 max-w-sm text-pretty text-muted-foreground leading-7">
-          {'Each one designed and built by me, from the first call to launch.'}
+          {'Each one designed and built by us, from the first call to launch.'}
         </p>
         {/* reference.css ships an unlayered reset, so spacing utilities it lacks need `!` to apply. */}
         <ul className="mt-12 border-border border-t">

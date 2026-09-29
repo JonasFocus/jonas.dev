@@ -6,6 +6,7 @@ import {
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from 'react';
 import { ChevronDown, Hexagon, Menu, Moon, Sun, X } from 'lucide-react';
@@ -13,42 +14,93 @@ import questions from './faq-data.json';
 import { InquiryButton } from '@/components/inquiry-form';
 
 const ThemeContext = createContext({ dark: true, toggle: () => {} });
+
+const THEME_KEY = 'theme';
+
+const themeListeners = new Set<() => void>();
+
+function preferredTheme() {
+  const stored = localStorage.getItem(THEME_KEY);
+  if (stored === 'dark' || stored === 'light') return stored === 'dark';
+  return !window.matchMedia('(prefers-color-scheme: light)').matches;
+}
+
+function subscribeTheme(notify: () => void) {
+  const query = window.matchMedia('(prefers-color-scheme: light)');
+  themeListeners.add(notify);
+  query.addEventListener('change', notify);
+  return () => {
+    themeListeners.delete(notify);
+    query.removeEventListener('change', notify);
+  };
+}
+
+function storeTheme(dark: boolean) {
+  localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light');
+  for (const notify of themeListeners) notify();
+}
+
+// Applies the stored theme before hydration so a light-mode visitor never sees a dark frame.
+const themeScript = `(function(){try{var e=document.getElementById('top');if(!e)return;var s=localStorage.getItem('${THEME_KEY}');var d=s?s==='dark':!matchMedia('(prefers-color-scheme: light)').matches;e.setAttribute('data-theme',d?'dark':'light');document.documentElement.classList.toggle('dark',d)}catch(_){}})()`;
+
 export function PageShell({ children }: { children: ReactNode }) {
-  const [dark, setDark] = useState(true);
+  const dark = useSyncExternalStore(subscribeTheme, preferredTheme, () => true);
   const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', dark);
+  }, [dark]);
   useEffect(() => {
     const root = ref.current;
     if (!root) return;
-    const observer = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('entered');
-            observer.unobserve(entry.target);
-          }
-        }),
-      { threshold: 0.06 },
-    );
-    root.querySelectorAll('main > section, main > div').forEach((el) => {
-      el.classList.add('new-reveal');
-      observer.observe(el);
-    });
-    return () => observer.disconnect();
+    const sections = [
+      ...root.querySelectorAll<HTMLElement>('main > section, main > div'),
+    ];
+    sections.forEach((el) => el.classList.add('new-reveal'));
+    let frame = 0;
+    function reveal() {
+      frame = 0;
+      for (const el of sections) {
+        const box = el.getBoundingClientRect();
+        const margin = Math.min(box.height * 0.06, window.innerHeight * 0.2);
+        if (box.top < window.innerHeight - margin && box.bottom > 0) {
+          el.classList.add('entered');
+        }
+      }
+    }
+    function schedule() {
+      frame ||= requestAnimationFrame(reveal);
+    }
+    reveal();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+    };
   }, []);
   return (
     <ThemeContext.Provider
-      value={{ dark, toggle: () => setDark((value) => !value) }}
+      value={{
+        dark,
+        toggle: () => storeTheme(!dark),
+      }}
     >
       <div
         id="top"
         ref={ref}
         data-theme={dark ? 'dark' : 'light'}
         className="meridian-page"
+        suppressHydrationWarning
       >
         <div className="flex min-h-screen w-full flex-col bg-background">
+          <a className="skip-link" href="#main">
+            Skip to content
+          </a>
           {children}
         </div>
       </div>
+      <script dangerouslySetInnerHTML={{ __html: themeScript }} />
     </ThemeContext.Provider>
   );
 }
@@ -68,7 +120,11 @@ const menus = {
   Services: [
     ['Websites', 'A clear home for your business online', '#websites'],
     ['SaaS products', 'Your idea, designed and built for real use', '#saas'],
-    ['Custom web apps', 'A better way to get your daily work done', '#web-apps'],
+    [
+      'Custom web apps',
+      'A better way to get your daily work done',
+      '#web-apps',
+    ],
   ],
   Explore: [
     [
@@ -76,8 +132,9 @@ const menus = {
       'Working together, from first sketch to launch',
       '#planning',
     ],
-    ['Technology', 'A practical stack for your product', '#ecosystem'],
-    ['Common questions', 'A few things to know before we begin', '#support'],
+    ['Technology', 'A practical stack for your product', '#technology'],
+    ['What you own', 'Everything ends up in your name', '#handover'],
+    ['Common questions', 'A few things to know before we begin', '#faq'],
   ],
 };
 export function Header({
@@ -88,6 +145,37 @@ export function Header({
   const [mobile, setMobile] = useState(false);
   const [active, setActive] = useState<string | null>(null);
   const ref = useRef<HTMLElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!mobile) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const menu = menuRef.current;
+    menu?.querySelector<HTMLElement>('a, button')?.focus();
+    function trap(event: KeyboardEvent) {
+      if (event.key !== 'Tab' || !menu) return;
+      const stops = [
+        toggleRef.current,
+        ...menu.querySelectorAll<HTMLElement>('a, button'),
+      ].filter((stop): stop is HTMLElement => stop !== null);
+      const first = stops[0];
+      const last = stops[stops.length - 1];
+      if (!first || !last) return;
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+    document.addEventListener('keydown', trap);
+    return () => {
+      document.body.style.overflow = previous;
+      document.removeEventListener('keydown', trap);
+    };
+  }, [mobile]);
   useEffect(() => {
     function close(event: PointerEvent) {
       if (
@@ -101,7 +189,10 @@ export function Header({
     function escape(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         setActive(null);
-        setMobile(false);
+        setMobile((open) => {
+          if (open) toggleRef.current?.focus();
+          return false;
+        });
       }
     }
     document.addEventListener('pointerdown', close);
@@ -168,11 +259,12 @@ export function Header({
             <a className="nav-link" href="#planning">
               Planning
             </a>
-            <a className="nav-link" href="#services">
-              About
+            <a className="nav-link" href="#handover">
+              What you own
             </a>
           </nav>
           <div className="flex items-center gap-2">
+            <ThemeButton />
             <a
               className="new-button ghost hidden sm:inline-flex"
               href="#services"
@@ -188,6 +280,7 @@ export function Header({
               </a>
             )}
             <button
+              ref={toggleRef}
               className="grid size-9 place-items-center lg:hidden"
               aria-label={mobile ? 'Close menu' : 'Open menu'}
               aria-expanded={mobile}
@@ -198,7 +291,7 @@ export function Header({
           </div>
         </div>
         {mobile && (
-          <div className="mobile-dropdown lg:hidden">
+          <div ref={menuRef} className="mobile-dropdown lg:hidden">
             {(['Services', 'Explore'] as const).map((name) => (
               <div key={name}>
                 <button
@@ -228,20 +321,21 @@ export function Header({
             </a>
             <a
               className="nav-link"
-              href="#services"
+              href="#handover"
               onClick={() => setMobile(false)}
             >
-              About Jonas
+              What you own
             </a>
             {newsletterEnabled && (
               <a
-                className="new-button primary"
+                className="nav-link"
                 href="#newsletter"
                 onClick={() => setMobile(false)}
               >
                 Newsletter
               </a>
             )}
+            <InquiryButton onOpen={() => setMobile(false)} />
           </div>
         )}
       </header>
@@ -251,7 +345,7 @@ export function Header({
 export function Faq() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section id="support" className="w-full scroll-mt-24 px-4 py-24 sm:px-8">
+    <section id="faq" className="w-full scroll-mt-24 px-4 py-24 sm:px-8">
       <div className="mx-auto grid w-full max-w-6xl gap-12 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
           <span className="inline-flex items-center rounded-full border border-border/60 bg-card px-3 py-1 font-medium text-muted-foreground text-xs">
