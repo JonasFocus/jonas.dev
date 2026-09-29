@@ -1,6 +1,7 @@
 import 'server-only';
 import { z } from 'zod';
 import { requireOwner } from './auth';
+import { endOfTodayIn } from './time';
 import {
   activityRecordSchema,
   customerRecordSchema,
@@ -136,23 +137,6 @@ const withRequestName = {
 };
 const attentionFollowUpSchema = followUpRecordSchema.extend(withRequestName);
 const feedEventSchema = activityRecordSchema.extend(withRequestName);
-
-// ponytail: fixed-offset math, so "today" can be an hour off on DST change days.
-function endOfTodayIn(timeZone: string, now: Date) {
-  const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone,
-    hour: 'numeric',
-    minute: 'numeric',
-    second: 'numeric',
-    hourCycle: 'h23',
-  }).formatToParts(now);
-  const part = (type: string) =>
-    Number(parts.find((entry) => entry.type === type)?.value ?? 0);
-  const elapsed =
-    ((part('hour') * 60 + part('minute')) * 60 + part('second')) * 1000 +
-    now.getMilliseconds();
-  return new Date(now.getTime() - elapsed + 86_400_000);
-}
 
 export async function getOverview() {
   const { supabase } = await requireOwner();
