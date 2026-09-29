@@ -970,6 +970,14 @@ h2 span {
   --border: #ffffff0d;
   --muted-foreground: #909090;
 }
+html:not(.dark) {
+  --background: #fcfcfc;
+  --foreground: #0a0e11;
+  --popover: #f2f2f2;
+  --border: #0a0e1114;
+  --muted-foreground: #5b6166;
+  color-scheme: light;
+}
 body {
   background: var(--background);
 }

@@ -1,5 +1,34 @@
 import Link from 'next/link';
-import { ThemeButton } from './interactions';
+
+const linkClass =
+  'inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4';
+
+const columns = [
+  [
+    'Services',
+    [
+      ['Websites & apps', '#services'],
+      ['Project planning', '#planning'],
+      ['What you own', '#handover'],
+    ],
+  ],
+  [
+    'Explore',
+    [
+      ['Plans', '#pricing'],
+      ['Technology', '#technology'],
+      ['Questions', '#faq'],
+    ],
+  ],
+  [
+    'Jonas',
+    [
+      ['Work together', '#contact'],
+      ['Privacy', '/privacy'],
+    ],
+  ],
+] as const;
+
 export function Footer() {
   return (
     <footer className="relative w-full overflow-hidden bg-background">
@@ -14,107 +43,30 @@ export function Footer() {
                 'Independent design and development for websites, SaaS products, and custom web applications.'
               }
             </p>
-            <div className="mt-6">
-              <ThemeButton />
-            </div>
           </div>
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
-            <div className="flex flex-col">
-              <p className="font-medium text-foreground text-sm">
-                {'Services'}
-              </p>
-              <ul className="mt-4 flex flex-col gap-3">
-                <li>
-                  <a
-                    href="#services"
-                    className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
-                  >
-                    {'Websites & apps'}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#planning"
-                    className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
-                  >
-                    {'Project planning'}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#planning"
-                    className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
-                  >
-                    {'Process'}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#services"
-                    className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
-                  >
-                    {'About Jonas'}
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div className="flex flex-col">
-              <p className="font-medium text-foreground text-sm">{'Explore'}</p>
-              <ul className="mt-4 flex flex-col gap-3">
-                <li>
-                  <a
-                    href="#ecosystem"
-                    className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
-                  >
-                    {'Technology'}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#planning"
-                    className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
-                  >
-                    {'Planning'}
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div className="flex flex-col">
-              <p className="font-medium text-foreground text-sm">{'Jonas'}</p>
-              <ul className="mt-4 flex flex-col gap-3">
-                <li>
-                  <a
-                    href="#services"
-                    className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
-                  >
-                    {'About Jonas'}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#contact"
-                    className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
-                  >
-                    {'Work together'}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#support"
-                    className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
-                  >
-                    {'Questions'}
-                  </a>
-                </li>
-              </ul>
-            </div>
+            {columns.map(([title, links]) => (
+              <div key={title} className="flex flex-col">
+                <p className="font-medium text-foreground text-sm">{title}</p>
+                <ul className="mt-4 flex flex-col gap-3">
+                  {links.map(([label, href]) => (
+                    <li key={label}>
+                      {href.startsWith('/') ? (
+                        <Link href={href} className={linkClass}>
+                          {label}
+                        </Link>
+                      ) : (
+                        <a href={href} className={linkClass}>
+                          {label}
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
-        <p className="mt-10 text-sm text-muted-foreground">
-          <Link href="/privacy" className="underline underline-offset-4">
-            Privacy
-          </Link>
-        </p>
         <div className="relative mt-16 h-[10vw] select-none overflow-hidden">
           <span
             aria-hidden="true"

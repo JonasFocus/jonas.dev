@@ -10,9 +10,9 @@ const handover = [
   ['Docs', 'Setup guide'],
 ] as const;
 
-export function Services() {
+export function Handover() {
   return (
-    <div id="product" className="scroll-mt-24">
+    <div id="handover" className="scroll-mt-24">
       <section className="w-full px-4 py-20 sm:px-8">
         <div className="mx-auto w-full max-w-6xl">
           <span className="inline-flex items-center rounded-full border border-border/60 bg-card px-3 py-1 font-medium text-muted-foreground text-xs">
@@ -40,16 +40,13 @@ export function Services() {
                     <span className="truncate font-mono text-[0.8rem]">
                       {item}
                     </span>
-                    <Check
-                      className="size-4 text-success"
-                      aria-label="Yours"
-                    />
+                    <Check className="size-4 text-success" aria-label="Yours" />
                   </li>
                 ))}
               </ul>
               <p className="mt-5 text-pretty text-muted-foreground text-sm leading-6">
                 {
-                  'Run it, move it, or take it to another developer. Nothing is locked to me.'
+                  'Run it, move it, or take it to another developer. Nothing is locked to us.'
                 }
               </p>
             </div>

@@ -202,7 +202,7 @@ export function InquiryForm({ caseStudy }: { caseStudy?: Study }) {
   return (
     <form className="inquiry-form" onSubmit={submit}>
       <p className="inquiry-note">
-        A little context goes a long way. Tell me what you have in mind.
+        A little context goes a long way. Tell us what you have in mind.
       </p>
       <fieldset disabled={result.kind === 'pending'}>
         <div className="inquiry-grid">
@@ -359,7 +359,15 @@ export function InquiryForm({ caseStudy }: { caseStudy?: Study }) {
   );
 }
 
-export function InquiryButton() {
+export function InquiryButton({
+  label = 'Start your project',
+  className = 'new-button primary',
+  onOpen,
+}: {
+  label?: string;
+  className?: string;
+  onOpen?: () => void;
+} = {}) {
   const [open, setOpen] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const id = useId();
@@ -374,8 +382,14 @@ export function InquiryButton() {
   }, [open]);
   return (
     <>
-      <button className="new-button primary" onClick={() => setOpen(true)}>
-        Start your project <span aria-hidden="true">↗</span>
+      <button
+        className={className}
+        onClick={() => {
+          setOpen(true);
+          onOpen?.();
+        }}
+      >
+        {label} <span aria-hidden="true">↗</span>
       </button>
       <dialog
         ref={dialog}

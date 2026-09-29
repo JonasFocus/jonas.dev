@@ -7,9 +7,12 @@ const geistSans = Geist({
   subsets: ['latin'],
 });
 
+// The landing page ships its own Inter/Fraunces/JetBrains faces, so these two are
+// only ever painted on /admin and /privacy: keep them out of the preload set.
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
+  preload: false,
 });
 
 const editorial = Lora({
@@ -17,6 +20,7 @@ const editorial = Lora({
   subsets: ['latin'],
   weight: '400',
   style: ['normal', 'italic'],
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -47,7 +51,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${editorial.variable} antialiased`}
       >

@@ -1,4 +1,5 @@
 import { Contact } from './interactions';
+import { ReviewPill } from './review-pill';
 export function Invitation() {
   return (
     <section className="w-full px-4 pb-24 sm:px-8" id="contact">
@@ -12,7 +13,9 @@ export function Invitation() {
               'A website, a SaaS product, or a better way to work. Tell us what you have in mind and we can work out the next step.'
             }
           </p>
-          <div className="mt-6"><ReviewPill /></div>
+          <div className="mt-6">
+            <ReviewPill />
+          </div>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
             <Contact />
             <a
@@ -54,4 +57,3 @@ export function Invitation() {
     </section>
   );
 }
-import { ReviewPill } from './review-pill';

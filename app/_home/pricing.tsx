@@ -1,4 +1,5 @@
 import { Check } from 'lucide-react';
+import { InquiryButton } from '@/components/inquiry-form';
 
 const monthly = [
   'We build your website',
@@ -42,14 +43,12 @@ export function Pricing() {
             <span>$297</span>
             <small>a month</small>
           </p>
-          <p className="pricing-setup">+ one-time setup fee</p>
+          <p className="pricing-setup">+ $499 one-time setup fee</p>
           <p className="pricing-note">
             Pay 4 months now ($1,188) and get 6 months of hosting ($1,782
             value).
           </p>
-          <a className="pricing-cta" href="#contact">
-            Get a website
-          </a>
+          <InquiryButton className="pricing-cta" label="Get a website" />
           <ul className="pricing-includes">
             {monthly.map((item) => (
               <li key={item}>
@@ -73,9 +72,10 @@ export function Pricing() {
           <p className="pricing-note">
             Bookings, payments, staff tools. You own everything.
           </p>
-          <a className="pricing-cta" href="#contact">
-            Talk about a full build
-          </a>
+          <InquiryButton
+            className="pricing-cta"
+            label="Talk about a full build"
+          />
           <ul className="pricing-includes">
             {enterprise.map((item) => (
               <li key={item}>

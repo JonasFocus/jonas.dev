@@ -1,5 +1,6 @@
 import { Check } from 'lucide-react';
 import Image from 'next/image';
+import { InquiryButton } from '@/components/inquiry-form';
 import { SourceGradient } from './source-gradient';
 import { ReviewPill } from './review-pill';
 
@@ -27,31 +28,11 @@ export function Hero() {
             }
           </p>
           <div className="mt-8">
-            <div className="review-pill-placement"><ReviewPill /></div>
+            <div className="review-pill-placement">
+              <ReviewPill />
+            </div>
             <div className="flex flex-wrap items-center gap-3">
-              <a
-                className="inline-flex items-center justify-center font-medium select-none transition-colors disabled:pointer-events-none disabled:opacity-50 border border-border bg-card text-foreground h-12 gap-2 px-6 text-base rounded-full"
-                href="#contact"
-                tabIndex={0}
-              >
-                {'Start your project'}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-arrow-right size-4"
-                  aria-hidden="true"
-                >
-                  <path d="M5 12h14" />
-                  <path d="m12 5 7 7-7 7" />
-                </svg>
-              </a>
+              <InquiryButton className="inline-flex items-center justify-center font-medium select-none transition-colors disabled:pointer-events-none disabled:opacity-50 border border-border bg-card text-foreground h-12 gap-2 px-6 text-base rounded-full" />
               <a
                 className="inline-flex items-center justify-center font-medium select-none transition-colors disabled:pointer-events-none disabled:opacity-50 border border-border bg-card text-foreground hover:border-border h-12 gap-2 px-6 text-base rounded-full"
                 href="#planning"
@@ -62,7 +43,7 @@ export function Hero() {
             </div>
           </div>
           <div className="mt-16 lg:mt-24">
-            <p className="text-muted-foreground/80 text-xs">
+            <p className="text-muted-foreground text-xs">
               {'Built with the tools behind modern websites and SaaS'}
             </p>
             <div className="mt-4 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_88%,transparent)]">
@@ -751,7 +732,9 @@ export function Hero() {
                                   <span
                                     aria-hidden="true"
                                     className="size-1.5 rounded-full"
-                                    style={{ backgroundColor: 'var(--warning)' }}
+                                    style={{
+                                      backgroundColor: 'var(--warning)',
+                                    }}
                                   />
                                 ) : (
                                   step.version
