@@ -235,9 +235,16 @@
   }
 }
 .meridian-page .faq-entry {
+  --faq-ease: cubic-bezier(0.32, 0.72, 0, 1);
   background: var(--card);
   overflow: hidden;
   border-radius: 0;
+  transition:
+    margin 280ms var(--faq-ease),
+    border-radius 280ms var(--faq-ease);
+}
+.meridian-page .faq-entry.expanded {
+  transition-duration: 420ms;
 }
 .meridian-page .faq-entry:first-child {
   border-radius: 28px 28px 0 0;
@@ -264,14 +271,48 @@
   font-size: 15px;
   font-weight: 500;
 }
+.meridian-page .faq-entry button svg {
+  transition: transform 280ms var(--faq-ease);
+}
 .meridian-page .faq-entry.expanded button svg {
   transform: rotate(180deg);
+  transition-duration: 420ms;
+}
+/* Animating 0fr -> 1fr lets the panel grow to its natural height without measuring it. */
+.meridian-page .faq-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 280ms var(--faq-ease);
+}
+.meridian-page .faq-entry.expanded .faq-panel {
+  grid-template-rows: 1fr;
+  transition-duration: 420ms;
 }
 .meridian-page .faq-answer-new {
-  padding: 0 20px 20px;
+  min-height: 0;
+  overflow: hidden;
   font-size: 15px;
   line-height: 24px;
   color: var(--muted-foreground);
+  opacity: 0;
+  transform: translateY(-6px);
+  filter: blur(2px);
+  transition:
+    opacity 160ms ease-out,
+    transform 280ms var(--faq-ease),
+    filter 160ms ease-out;
+}
+.meridian-page .faq-entry.expanded .faq-answer-new {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition:
+    opacity 320ms ease-out 80ms,
+    transform 420ms var(--faq-ease),
+    filter 320ms ease-out 80ms;
+}
+.meridian-page .faq-answer-new p {
+  padding: 0 20px 20px;
 }
 .meridian-page .new-reveal {
   animation: new-enter 0.65s ease both;
