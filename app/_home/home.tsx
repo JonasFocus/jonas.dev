@@ -4,7 +4,7 @@ import { Newsletter } from './newsletter';
 import { Hero } from './hero';
 import { Technology } from './technology';
 import { Services } from './services';
-import { Ownership } from './ownership';
+import { Offerings } from './offerings';
 import { Planning } from './planning';
 import { Invitation } from './invitation';
 import { Footer } from './footer';
@@ -26,8 +26,8 @@ export default async function HomePage() {
         )}
         <Pricing />
         <Technology />
+        <Offerings />
         <Services />
-        <Ownership />
         <Planning />
         <Faq />
         <Invitation />

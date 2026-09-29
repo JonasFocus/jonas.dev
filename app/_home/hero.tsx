@@ -54,7 +54,7 @@ export function Hero() {
               </a>
               <a
                 className="inline-flex items-center justify-center font-medium select-none transition-colors disabled:pointer-events-none disabled:opacity-50 border border-border bg-card text-foreground hover:border-border h-12 gap-2 px-6 text-base rounded-full"
-                href="#security"
+                href="#planning"
                 tabIndex={0}
               >
                 {'How we work'}
