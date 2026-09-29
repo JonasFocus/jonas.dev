@@ -66,15 +66,15 @@ export function ThemeButton() {
 }
 const menus = {
   Services: [
-    ['Websites', 'A clear home for your business online', '#product'],
-    ['SaaS products', 'Your idea, designed and built for real use', '#product'],
-    ['Custom web apps', 'A better way to get your daily work done', '#product'],
+    ['Websites', 'A clear home for your business online', '#websites'],
+    ['SaaS products', 'Your idea, designed and built for real use', '#saas'],
+    ['Custom web apps', 'A better way to get your daily work done', '#web-apps'],
   ],
   Explore: [
     [
       'How we work',
       'Working together, from first sketch to launch',
-      '#security',
+      '#planning',
     ],
     ['Technology', 'A practical stack for your product', '#ecosystem'],
     ['Common questions', 'A few things to know before we begin', '#support'],
@@ -168,14 +168,14 @@ export function Header({
             <a className="nav-link" href="#planning">
               Planning
             </a>
-            <a className="nav-link" href="#security">
+            <a className="nav-link" href="#services">
               About
             </a>
           </nav>
           <div className="flex items-center gap-2">
             <a
               className="new-button ghost hidden sm:inline-flex"
-              href="#product"
+              href="#services"
             >
               See our work
             </a>
@@ -228,7 +228,7 @@ export function Header({
             </a>
             <a
               className="nav-link"
-              href="#security"
+              href="#services"
               onClick={() => setMobile(false)}
             >
               About Jonas

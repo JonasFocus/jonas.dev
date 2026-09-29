@@ -26,7 +26,7 @@ export function Footer() {
               <ul className="mt-4 flex flex-col gap-3">
                 <li>
                   <a
-                    href="#product"
+                    href="#services"
                     className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
                   >
                     {'Websites & apps'}
@@ -42,7 +42,7 @@ export function Footer() {
                 </li>
                 <li>
                   <a
-                    href="#security"
+                    href="#planning"
                     className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
                   >
                     {'Process'}
@@ -50,7 +50,7 @@ export function Footer() {
                 </li>
                 <li>
                   <a
-                    href="#security"
+                    href="#services"
                     className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
                   >
                     {'About Jonas'}
@@ -84,7 +84,7 @@ export function Footer() {
               <ul className="mt-4 flex flex-col gap-3">
                 <li>
                   <a
-                    href="#security"
+                    href="#services"
                     className="inline-flex w-fit items-center text-muted-foreground text-sm outline-none transition-[opacity,filter,color] duration-300 ease-out hover:text-foreground focus-visible:text-foreground focus-visible:underline focus-visible:underline-offset-4"
                   >
                     {'About Jonas'}
