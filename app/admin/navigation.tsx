@@ -6,6 +6,7 @@ const links = [
   ['/admin/requests', 'Requests'],
   ['/admin/customers', 'Customers'],
   ['/admin/follow-ups', 'Follow-ups'],
+  ['/admin/analytics', 'Analytics'],
   ['/admin/security', 'Security'],
 ];
 export function AdminNavigation() {

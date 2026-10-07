@@ -354,13 +354,113 @@ test('intake reports whether a submission is new or a retry', async () => {
 
 test('admin_users holds exactly one owner', async () => {
   await assert.rejects(
-    db.query('insert into public.admin_users(user_id) values ($1)', [
-      stranger,
-    ]),
+    db.query('insert into public.admin_users(user_id) values ($1)', [stranger]),
     /duplicate key/,
   );
   const owners = await db.query<{ user_id: string }>(
     'select user_id from public.admin_users',
   );
   assert.deepEqual(owners.rows, [{ user_id: owner }]);
+});
+
+async function track(
+  session: string,
+  events: object[],
+  engaged = 0,
+  key = 'visitor-key-0000001',
+) {
+  await db.query('select public.track_visit($1,$2,$3::jsonb,$4::jsonb,$5)', [
+    session,
+    key,
+    JSON.stringify({ path: '/', device: 'desktop', browser: 'Firefox' }),
+    JSON.stringify(events),
+    engaged,
+  ]);
+}
+test('visits are recorded privately and summarized only for the owner', async () => {
+  const session = randomUUID();
+  await track(session, [{ type: 'pageview', path: '/' }]);
+  await track(
+    session,
+    [
+      { type: 'click', path: '/', label: 'Start a project' },
+      { type: 'pageview', path: '/privacy' },
+    ],
+    500,
+  );
+  const row = (
+    await db.query<{
+      pageviews: number;
+      events: number;
+      engaged_seconds: number;
+    }>(
+      'select pageviews,events,engaged_seconds from visitor_sessions where id=$1',
+      [session],
+    )
+  ).rows[0];
+  assert.deepEqual(
+    { pageviews: row.pageviews, events: row.events },
+    { pageviews: 2, events: 3 },
+  );
+  // One beat adds at most 60 seconds and never more than the session has existed.
+  assert.ok(row.engaged_seconds <= 2);
+  await db.exec('set role anon');
+  try {
+    await assert.rejects(
+      db.query('select * from visitor_events'),
+      /permission denied/,
+    );
+    await assert.rejects(track(randomUUID(), []), /permission denied/);
+  } finally {
+    await db.exec('reset role');
+  }
+  await asUser(stranger, async () => {
+    assert.equal(
+      (await db.query('select * from visitor_sessions')).rows.length,
+      0,
+    );
+    await assert.rejects(
+      db.query('select public.visitor_stats(7)'),
+      /NOT_AUTHORIZED/,
+    );
+  });
+  await asUser(owner, async () => {
+    const stats = (
+      await db.query<{
+        s: {
+          totals: { sessions: number; pageviews: number };
+          pages: { label: string; count: number }[];
+          clicks: { label: string; count: number }[];
+        };
+      }>('select public.visitor_stats(7) s')
+    ).rows[0].s;
+    assert.ok(stats.totals.sessions >= 1);
+    assert.ok(stats.totals.pageviews >= 2);
+    assert.ok(stats.pages.some((page) => page.label === '/privacy'));
+    assert.ok(stats.clicks.some((click) => click.label === 'Start a project'));
+  });
+});
+test('a session cannot be extended by a different visitor', async () => {
+  const session = randomUUID();
+  await track(session, [{ type: 'pageview', path: '/' }]);
+  await track(
+    session,
+    [{ type: 'pageview', path: '/x' }],
+    0,
+    'other-visitor-key-01',
+  );
+  const n = await db.query<{ n: number }>(
+    'select count(*)::int n from visitor_events where session_id=$1',
+    [session],
+  );
+  assert.equal(n.rows[0].n, 1);
+});
+test('one visitor cannot open unlimited sessions per hour', async () => {
+  const key = 'flooding-visitor-key-1';
+  for (let i = 0; i < 35; i++) await track(randomUUID(), [], 0, key);
+  const n = await db.query<{ n: number }>(
+    'select count(*)::int n from visitor_sessions where visitor_key=$1',
+    [key],
+  );
+  assert.equal(n.rows[0].n, 30);
 });

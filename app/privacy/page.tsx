@@ -35,6 +35,17 @@ export default function PrivacyPage() {
         run the site. Technical request information may be processed to prevent
         abuse and diagnose failures. Admin sign-in uses authentication cookies.
       </p>
+      <h2 className="mt-8 text-xl">Visit statistics</h2>
+      <p className="mt-3">
+        The site keeps its own anonymous visit statistics: which pages are
+        viewed, which links and buttons are clicked, how far pages are scrolled,
+        and how long a visit lasts. Form contents are never recorded. No cookies
+        are set and IP addresses are not stored; a visit is identified by a
+        random value that is forgotten when the tab closes, and visitors are
+        counted with a one-way key that changes every day. Browsers that send
+        Global Privacy Control or Do Not Track are not counted. Statistics are
+        deleted after 180 days.
+      </p>
       <h2 className="mt-8 text-xl">Your choices</h2>
       <p className="mt-3">
         Optional fields can be left blank. Please do not include passwords,

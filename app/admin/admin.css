@@ -1245,3 +1245,140 @@ a.cx-row-name:hover {
     transition-delay: 0ms !important;
   }
 }
+
+/* Analytics. One series, one hue: bars and ranking fills use --violet. */
+.ca-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 160px;
+  margin: 12px 0 0;
+  padding: 0 0 1px;
+  list-style: none;
+  border-bottom: 1px solid var(--line);
+}
+
+.ca-col {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  align-items: flex-end;
+  height: 100%;
+  min-width: 3px;
+}
+
+.ca-bar {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  background: var(--violet);
+  opacity: 0.85;
+  transition: opacity 160ms ease;
+}
+
+.ca-col:hover .ca-bar {
+  opacity: 1;
+}
+
+.ca-tip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 2;
+  display: none;
+  width: max-content;
+  max-width: 240px;
+  padding: 8px 10px;
+  transform: translateX(-50%);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--dim);
+  font-size: 12px;
+  line-height: 1.5;
+  pointer-events: none;
+}
+
+.ca-tip b {
+  display: block;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.ca-col:hover .ca-tip {
+  display: block;
+}
+
+.ca-col:first-child .ca-tip {
+  left: 0;
+  transform: none;
+}
+
+.ca-col:last-child .ca-tip {
+  right: 0;
+  left: auto;
+  transform: none;
+}
+
+.ca-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0 32px;
+}
+
+.ca-rank {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ca-rank li {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+.ca-rank-bar {
+  position: absolute;
+  inset: 2px auto 2px 0;
+  border-radius: 0 4px 4px 0;
+  background: rgb(139 124 246 / 0.16);
+}
+
+.ca-rank-label {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ca-rank-num,
+.ca-num {
+  position: relative;
+  color: var(--dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.ca-rank li.ca-rank-empty {
+  color: var(--faint);
+}
+
+.ca-sessions {
+  grid-template-columns: minmax(0, 1.6fr) minmax(
+      0,
+      1fr
+    ) max-content max-content max-content;
+  margin-top: 8px;
+}
+
+@media (max-width: 640px) {
+  .ca-sessions th:nth-child(2),
+  .ca-sessions td:nth-child(2),
+  .ca-sessions th:nth-child(3),
+  .ca-sessions td:nth-child(3) {
+    display: none;
+  }
+}

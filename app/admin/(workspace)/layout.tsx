@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { requireOwner } from '@/lib/crm/auth';
 import { AdminNavigation } from '../navigation';
 import { SignOut } from '../auth-controls';
+import { SkipOwnVisits } from '@/components/visit-tracker';
 export const dynamic = 'force-dynamic';
 export default async function WorkspaceLayout({
   children,
@@ -24,6 +25,7 @@ export default async function WorkspaceLayout({
         <span className="cx-who">{user.email}</span>
         <SignOut />
       </header>
+      <SkipOwnVisits />
       <AdminNavigation />
       <main id="admin-content" className="cx-pane">
         {children}

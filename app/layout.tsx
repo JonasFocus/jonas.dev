@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono, Lora } from 'next/font/google';
+import { VisitTracker } from '@/components/visit-tracker';
 import './globals.css';
 
 const geistSans = Geist({
@@ -56,6 +57,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${editorial.variable} antialiased`}
       >
         {children}
+        <VisitTracker />
       </body>
     </html>
   );
