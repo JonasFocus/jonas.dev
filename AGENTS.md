@@ -1,3 +1,14 @@
+# Delivery workflow
+
+For every feature or change in this repo:
+
+1. Open a pull request ready for review.
+2. Review the exact PR head and resolve all actionable findings.
+3. Wait for all CI checks and the deployment preview to pass.
+4. Merge passing PRs to `main` automatically, then verify the merge and deployment result.
+
+Jonas has authorized this workflow. Do not ask again before merging a PR that passes these gates.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know
