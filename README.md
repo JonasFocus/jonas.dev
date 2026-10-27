@@ -58,9 +58,12 @@ Give each environment its own database and secrets. Never add the `NEXT_PUBLIC_`
 | `npm run typecheck` | Generates route types, then runs `tsc --noEmit`.                                          |
 | `npm test`          | Runs validation and Slack tests, and runs the real migrations and RLS policies in PGlite. |
 | `npm run test:e2e`  | Runs Playwright against a running app and a real Supabase project.                        |
+| `npm run test:public` | Runs public UI regressions against a production build without Supabase credentials. |
 | `npm run build`     | Builds for production.                                                                    |
 
-CI (`.github/workflows/verify.yml`) runs lint, typecheck, tests, build, and `npm audit` across production and development dependencies at every severity on every push and pull request. CI does not run the e2e tests.
+CI (`.github/workflows/verify.yml`) runs lint, typecheck, tests, build, `npm audit` across production and development dependencies at every severity, and public UI browser regressions on every push and pull request. CI does not run the authenticated e2e tests.
+
+To run public UI regressions locally, run `npm run build`, `npx playwright install chromium`, and `npm run test:public`. The tests start their own production server on port 3012.
 
 The e2e specs (`workflow`, `passkey`, `newsletter`) create fictional records and delete them afterwards. Start the app before running them, and point them only at a test environment. A spec fails if configuration is missing. It does not skip.
 
