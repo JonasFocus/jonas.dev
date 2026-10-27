@@ -1,3 +1,4 @@
+import { adminListFiltersSchema } from '@/lib/crm/validation';
 import Link from 'next/link';
 import { Pagination, pageNumber } from '../../pagination';
 import { getRequests } from '@/lib/crm/queries';
@@ -5,10 +6,11 @@ import { Hero, RequestTable, SearchIcon, statusLabels } from '../../shared';
 export default async function Requests({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; status?: string; page?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const filters = await searchParams;
-  const page = pageNumber(filters.page);
+  const params = await searchParams;
+  const filters = adminListFiltersSchema.parse(params);
+  const page = pageNumber(params.page);
   const requests = await getRequests({ ...filters, page });
   const visible = requests.slice(0, 50);
   const filtered = Boolean(filters.q || filters.status);

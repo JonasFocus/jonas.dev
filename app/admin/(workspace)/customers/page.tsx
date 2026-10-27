@@ -1,3 +1,4 @@
+import { adminListFiltersSchema } from '@/lib/crm/validation';
 import Link from 'next/link';
 import { Pagination, pageNumber } from '../../pagination';
 import { getCustomers } from '@/lib/crm/queries';
@@ -5,10 +6,11 @@ import { DateLabel, Hero, SearchIcon } from '../../shared';
 export default async function Customers({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; page?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const filters = await searchParams;
-  const page = pageNumber(filters.page);
+  const params = await searchParams;
+  const filters = adminListFiltersSchema.parse(params);
+  const page = pageNumber(params.page);
   const customers = await getCustomers({ q: filters.q, page });
   const visible = customers.slice(0, 50);
   return (
