@@ -22,4 +22,7 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
-      - run: npm audit --omit=dev --audit-level=high
+      - run: npm audit
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:public
+      - run: npm run test:session

@@ -1,4 +1,10 @@
 import { z } from 'zod';
+export const emailSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .max(254)
+  .pipe(z.email('Enter a valid email address.'));
 const serviceSchema = z.enum(['website', 'saas', 'web-app', 'other']);
 const optionalText = (max: number) =>
   z.string().trim().max(max).optional().default('');
@@ -6,11 +12,7 @@ export const inquirySchema = z
   .object({
     submissionId: z.uuid(),
     name: z.string().trim().min(2, 'Enter your name.').max(120),
-    email: z
-      .email('Enter a valid email address.')
-      .trim()
-      .toLowerCase()
-      .max(254),
+    email: emailSchema,
     company: optionalText(160),
     service: z
       .union([
@@ -42,6 +44,10 @@ export const statusSchema = z.enum([
   'closed',
   'spam',
 ]);
+export const adminListFiltersSchema = z.object({
+  q: z.string().optional().catch(undefined),
+  status: statusSchema.optional().catch(undefined),
+});
 export const idSchema = z.uuid();
 export const requestRecordSchema = z.object({
   id: z.uuid(),

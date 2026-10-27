@@ -1,3 +1,6 @@
+body:has(.inquiry-dialog[open]) {
+  overflow: hidden;
+}
 .inquiry-dialog,
 .inquiry-form {
   --inquiry-accent: oklch(0.92 0 0);
@@ -8,6 +11,7 @@
   color: oklch(0.95 0 0);
 }
 .inquiry-dialog {
+  font-family: Inter, Arial, sans-serif;
   background: oklch(0.195 0 0);
   border: 1px solid var(--inquiry-line);
   border-radius: 28px;

@@ -16,7 +16,7 @@ Complete this list before promoting a release that changes inquiries, auth, or t
 ## Automated checks
 
 ```sh
-npm run lint && npm run typecheck && npm test && npm run build && npm audit --omit=dev
+npm run lint && npm run typecheck && npm test && npm run build && npm audit
 ```
 
 Then run `npm run test:e2e` against the deployed test environment.

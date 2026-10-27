@@ -1,7 +1,7 @@
 import 'server-only';
 import { z } from 'zod';
 import { requireOwner } from './auth';
-import { idSchema, statusSchema } from './validation';
+import { emailSchema, idSchema, statusSchema } from './validation';
 function parse<T>(schema: z.ZodType<T>, input: unknown): T {
   const result = schema.safeParse(input);
   if (!result.success)
@@ -110,7 +110,7 @@ export async function updateCustomer(input: {
     z.object({
       id: idSchema,
       name: z.string().trim().min(2).max(120),
-      email: z.email().trim().toLowerCase().max(254),
+      email: emailSchema,
       company: z.string().trim().max(160),
       status: z.enum(['active', 'inactive']),
     }),

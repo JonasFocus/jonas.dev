@@ -1,3 +1,8 @@
+@media (max-width: 1023px) {
+  body:has(.meridian-page .mobile-dropdown) {
+    overflow: hidden;
+  }
+}
 .meridian-page {
   --font-inter: Inter, Arial, sans-serif;
   --font-fraunces: Fraunces, Georgia, serif;

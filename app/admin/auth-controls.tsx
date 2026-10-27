@@ -79,6 +79,10 @@ export function LoginForm() {
         return;
       }
       const response = await fetch('/api/admin/session', { method: 'POST' });
+      if (response.status >= 500) {
+        setError('Admin access is temporarily unavailable. Please try again.');
+        return;
+      }
       if (!response.ok) {
         await supabase.auth.signOut({ scope: 'local' });
         setError('This account cannot access the workspace.');
