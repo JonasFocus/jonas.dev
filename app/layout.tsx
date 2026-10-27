@@ -25,6 +25,7 @@ const editorial = Lora({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://jonasinfocus.com'),
+  icons: { icon: '/favicon.svg' },
   alternates: { canonical: '/' },
   openGraph: {
     title: 'Jonas | Websites, SaaS & web apps',
