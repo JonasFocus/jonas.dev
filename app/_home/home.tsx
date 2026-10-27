@@ -1,3 +1,4 @@
+import { preload } from 'react-dom';
 import { getNewsletterEnabled } from '@/lib/homepage-settings';
 import { Pricing } from './pricing';
 import { Newsletter } from './newsletter';
@@ -36,7 +37,15 @@ const structuredData = {
   ],
 };
 
+const criticalFonts = [
+  '/new/83afe278b6a6bb3c-s.p.2bn3s6zvc0dyp.woff2',
+  '/new/03bda585a99c6450-s.p.32sris142tqlb.woff2',
+];
+
 export default async function HomePage() {
+  for (const href of criticalFonts) {
+    preload(href, { as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' });
+  }
   const newsletterEnabled = await getNewsletterEnabled();
   return (
     <PageShell>

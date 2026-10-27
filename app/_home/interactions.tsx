@@ -72,11 +72,20 @@ export function PageShell({ children }: { children: ReactNode }) {
     const sections = [
       ...root.querySelectorAll<HTMLElement>('main > section, main > div'),
     ];
-    sections.forEach((el) => el.classList.add('new-reveal'));
+    // Sections already on screen were painted by the server; animating them
+    // now would snap them back to a faded state after hydration.
+    const initiallyVisible = (el: HTMLElement) => {
+      const box = el.getBoundingClientRect();
+      return box.top < window.innerHeight && box.bottom > 0;
+    };
+    sections.forEach((el) => {
+      if (!initiallyVisible(el)) el.classList.add('new-reveal');
+    });
     let frame = 0;
     function reveal() {
       frame = 0;
       for (const el of sections) {
+        if (!el.classList.contains('new-reveal')) continue;
         const box = el.getBoundingClientRect();
         const margin = Math.min(box.height * 0.06, window.innerHeight * 0.2);
         if (box.top < window.innerHeight - margin && box.bottom > 0) {
