@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { createPortal } from 'react-dom';
 import { Check, Globe2, Layers3, PanelsTopLeft, Sparkles } from 'lucide-react';
 import { useEffect, useId, useRef, useState, type SyntheticEvent } from 'react';
 import './inquiry-form.css';
@@ -362,51 +363,49 @@ export function InquiryForm({ caseStudy }: { caseStudy?: Study }) {
 export function InquiryButton({
   label = 'Start your project',
   className = 'new-button primary',
-  onOpen,
 }: {
   label?: string;
   className?: string;
-  onOpen?: () => void;
 } = {}) {
   const [open, setOpen] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const id = useId();
   useEffect(() => {
     if (!open) return;
     dialog.current?.showModal();
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = previous;
-    };
   }, [open]);
   return (
     <>
       <button
         className={className}
         onClick={() => {
+          setPortalTarget(document.body);
           setOpen(true);
-          onOpen?.();
         }}
       >
         {label} <span aria-hidden="true">↗</span>
       </button>
-      <dialog
-        ref={dialog}
-        className="inquiry-dialog"
-        aria-labelledby={id}
-        onClose={() => setOpen(false)}
-      >
-        <button
-          className="inquiry-close"
-          aria-label="Close request"
-          onClick={() => dialog.current?.close()}
-        >
-          ×
-        </button>
-        <h2 id={id}>Let&apos;s talk about your idea.</h2>
-        <InquiryForm />
-      </dialog>
+      {portalTarget &&
+        createPortal(
+          <dialog
+            ref={dialog}
+            className="inquiry-dialog"
+            aria-labelledby={id}
+            onClose={() => setOpen(false)}
+          >
+            <button
+              className="inquiry-close"
+              aria-label="Close request"
+              onClick={() => dialog.current?.close()}
+            >
+              ×
+            </button>
+            <h2 id={id}>Let&apos;s talk about your idea.</h2>
+            <InquiryForm />
+          </dialog>,
+          portalTarget,
+        )}
     </>
   );
 }

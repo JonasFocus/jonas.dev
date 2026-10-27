@@ -18,30 +18,47 @@ const ThemeContext = createContext({ dark: true, toggle: () => {} });
 const THEME_KEY = 'theme';
 
 const themeListeners = new Set<() => void>();
+let transientTheme: boolean | undefined;
 
 function preferredTheme() {
-  const stored = localStorage.getItem(THEME_KEY);
-  if (stored === 'dark' || stored === 'light') return stored === 'dark';
+  if (transientTheme !== undefined) return transientTheme;
+  try {
+    const stored = localStorage.getItem(THEME_KEY);
+    if (stored === 'dark' || stored === 'light') return stored === 'dark';
+  } catch {
+    // Browser privacy settings can block storage while leaving the site usable.
+  }
   return !window.matchMedia('(prefers-color-scheme: light)').matches;
 }
 
 function subscribeTheme(notify: () => void) {
   const query = window.matchMedia('(prefers-color-scheme: light)');
+  const storageChanged = (event: StorageEvent) => {
+    if (event.key === THEME_KEY || event.key === null) notify();
+  };
   themeListeners.add(notify);
   query.addEventListener('change', notify);
+  window.addEventListener('storage', storageChanged);
   return () => {
     themeListeners.delete(notify);
     query.removeEventListener('change', notify);
+    window.removeEventListener('storage', storageChanged);
   };
 }
 
 function storeTheme(dark: boolean) {
-  localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light');
+  transientTheme = dark;
+  try {
+    localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light');
+    transientTheme = undefined;
+  } catch {
+    // Keep the choice in memory when persistence is unavailable.
+  }
   for (const notify of themeListeners) notify();
 }
 
 // Applies the stored theme before hydration so a light-mode visitor never sees a dark frame.
-const themeScript = `(function(){try{var e=document.getElementById('top');if(!e)return;var s=localStorage.getItem('${THEME_KEY}');var d=s?s==='dark':!matchMedia('(prefers-color-scheme: light)').matches;e.setAttribute('data-theme',d?'dark':'light');document.documentElement.classList.toggle('dark',d)}catch(_){}})()`;
+const themeScript = `(function(){try{var e=document.getElementById('top');if(!e)return;var s=localStorage.getItem('${THEME_KEY}');var d=s==='dark'||s==='light'?s==='dark':!matchMedia('(prefers-color-scheme: light)').matches;e.setAttribute('data-theme',d?'dark':'light');document.documentElement.classList.toggle('dark',d)}catch(_){}})()`;
 
 export function PageShell({ children }: { children: ReactNode }) {
   const dark = useSyncExternalStore(subscribeTheme, preferredTheme, () => true);
@@ -149,12 +166,23 @@ export function Header({
   const toggleRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!mobile) return;
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
     const menu = menuRef.current;
+    const desktop = window.matchMedia('(min-width: 1024px)');
+    const closeOnDesktop = () => {
+      if (desktop.matches && !document.querySelector('dialog[open]'))
+        setMobile(false);
+    };
+    desktop.addEventListener('change', closeOnDesktop);
+    document.addEventListener('close', closeOnDesktop, true);
     menu?.querySelector<HTMLElement>('a, button')?.focus();
     function trap(event: KeyboardEvent) {
-      if (event.key !== 'Tab' || !menu) return;
+      if (
+        event.key !== 'Tab' ||
+        !menu ||
+        desktop.matches ||
+        document.querySelector('dialog[open]')
+      )
+        return;
       const stops = [
         toggleRef.current,
         ...menu.querySelectorAll<HTMLElement>('a, button'),
@@ -172,12 +200,14 @@ export function Header({
     }
     document.addEventListener('keydown', trap);
     return () => {
-      document.body.style.overflow = previous;
+      desktop.removeEventListener('change', closeOnDesktop);
+      document.removeEventListener('close', closeOnDesktop, true);
       document.removeEventListener('keydown', trap);
     };
   }, [mobile]);
   useEffect(() => {
     function close(event: PointerEvent) {
+      if (document.querySelector('dialog[open]')) return;
       if (
         event.target instanceof Node &&
         !ref.current?.contains(event.target)
@@ -187,7 +217,7 @@ export function Header({
       }
     }
     function escape(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && !document.querySelector('dialog[open]')) {
         setActive(null);
         setMobile((open) => {
           if (open) toggleRef.current?.focus();
@@ -335,7 +365,7 @@ export function Header({
                 Newsletter
               </a>
             )}
-            <InquiryButton onOpen={() => setMobile(false)} />
+            <InquiryButton />
           </div>
         )}
       </header>
