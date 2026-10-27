@@ -1,5 +1,16 @@
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
+import {
+  copyFile,
+  mkdir,
+  mkdtemp,
+  realpath,
+  rm,
+  symlink,
+} from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createServer } from 'node:http';
 import { createRequire } from 'node:module';
 import { chromium, expect } from '@playwright/test';
@@ -86,6 +97,29 @@ await new Promise((resolve) => reservation.listen(0, resolve));
 const appPort = port(reservation);
 const appOrigin = `http://localhost:${appPort}`;
 await new Promise((resolve) => reservation.close(resolve));
+const sourceRoot = fileURLToPath(new URL('..', import.meta.url));
+const sandbox = await mkdtemp(join(tmpdir(), 'jonas-session-recovery-'));
+try {
+  const tracked = execFileSync('git', ['ls-files', '-z'], {
+    cwd: sourceRoot,
+    encoding: 'utf8',
+  });
+  for (const file of tracked.split('\0').filter(Boolean)) {
+    if (file.split('/').some((part) => part.startsWith('.env'))) continue;
+    const destination = join(sandbox, file);
+    await mkdir(dirname(destination), { recursive: true });
+    await copyFile(join(sourceRoot, file), destination);
+  }
+  await symlink(
+    await realpath(join(sourceRoot, 'node_modules')),
+    join(sandbox, 'node_modules'),
+    'dir',
+  );
+} catch (error) {
+  await rm(sandbox, { recursive: true, force: true });
+  await new Promise((resolve) => gateway.close(resolve));
+  throw error;
+}
 const server = spawn(
   process.execPath,
   [
@@ -96,9 +130,12 @@ const server = spawn(
     String(appPort),
   ],
   {
-    cwd: new URL('..', import.meta.url),
+    cwd: sandbox,
     env: {
-      ...process.env,
+      PATH: process.env.PATH,
+      HOME: process.env.HOME,
+      TMPDIR: process.env.TMPDIR,
+      NEXT_TELEMETRY_DISABLED: '1',
       NEXT_PUBLIC_SUPABASE_URL: `http://localhost:${port(gateway)}`,
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'test-publishable-key',
       APP_URL: appOrigin,
@@ -213,6 +250,11 @@ try {
   );
 } finally {
   await browser?.close();
-  server.kill('SIGTERM');
+  const stopped = new Promise((resolve) => server.once('exit', resolve));
+  if (server.exitCode === null) {
+    server.kill('SIGTERM');
+    await stopped;
+  }
   await new Promise((resolve) => gateway.close(resolve));
+  await rm(sandbox, { recursive: true, force: true });
 }
