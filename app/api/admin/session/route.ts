@@ -1,3 +1,4 @@
+import { isAuthRetryableFetchError } from '@supabase/supabase-js';
 import { isAllowedOrigin } from '@/lib/crm/origin';
 import { createSessionClient } from '@/lib/supabase/server';
 export async function POST(request: Request) {
@@ -9,6 +10,16 @@ export async function POST(request: Request) {
       data: { user },
       error,
     } = await supabase.auth.getUser();
+    if (
+      error &&
+      (isAuthRetryableFetchError(error) ||
+        error.status === 429 ||
+        (error.status ?? 0) >= 500)
+    )
+      return Response.json(
+        { error: 'Admin access is temporarily unavailable.' },
+        { status: 503 },
+      );
     if (error || !user)
       return Response.json({ error: 'Sign in to continue.' }, { status: 401 });
     const { data: member, error: memberError } = await supabase
@@ -16,7 +27,12 @@ export async function POST(request: Request) {
       .select('user_id')
       .eq('user_id', user.id)
       .maybeSingle();
-    if (memberError || !member) {
+    if (memberError)
+      return Response.json(
+        { error: 'Admin access is temporarily unavailable.' },
+        { status: 503 },
+      );
+    if (!member) {
       await supabase.auth.signOut();
       return Response.json(
         { error: 'This account does not have admin access.' },
