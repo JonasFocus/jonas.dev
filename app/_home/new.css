@@ -370,6 +370,7 @@
 }
 .meridian-page main > section:first-child {
   padding-block: 64px;
+  animation: new-enter 0.65s ease both;
 }
 .meridian-page main > section:first-child .flex.w-max > div {
   animation: new-marquee 40s linear infinite;
