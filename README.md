@@ -59,9 +59,10 @@ Give each environment its own database and secrets. Never add the `NEXT_PUBLIC_`
 | `npm test`          | Runs validation and Slack tests, and runs the real migrations and RLS policies in PGlite. |
 | `npm run test:e2e`  | Runs Playwright against a running app and a real Supabase project.                        |
 | `npm run test:public` | Runs public UI regressions against a production build without Supabase credentials. |
+| `npm run test:session` | Checks login outage recovery and unauthorized denial against a local mock service. |
 | `npm run build`     | Builds for production.                                                                    |
 
-CI (`.github/workflows/verify.yml`) runs lint, typecheck, tests, build, `npm audit` across production and development dependencies at every severity, and public UI browser regressions on every push and pull request. CI does not run the authenticated e2e tests.
+CI (`.github/workflows/verify.yml`) runs lint, typecheck, tests, build, `npm audit` across production and development dependencies at every severity, public UI browser regressions, and local session-recovery checks on every push and pull request. CI does not run the authenticated provider e2e tests.
 
 To run public UI regressions locally, run `npm run build`, `npx playwright install chromium`, and `npm run test:public`. The tests start their own production server on port 3012.
 

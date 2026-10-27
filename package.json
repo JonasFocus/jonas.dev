@@ -14,7 +14,8 @@
     "test": "tsx --test tests/*.test.ts",
     "typecheck": "next typegen && tsc --noEmit",
     "test:e2e": "playwright test",
-    "test:public": "playwright test --config=playwright.public.config.ts"
+    "test:public": "playwright test --config=playwright.public.config.ts",
+    "test:session": "node scripts/verify-session-recovery.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
