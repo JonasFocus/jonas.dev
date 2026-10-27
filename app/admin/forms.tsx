@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useRef, type ReactNode } from 'react';
+import { startTransition, useActionState, useRef, type ReactNode } from 'react';
 import type { ActionState } from './actions';
 
 type AdminAction = (
@@ -40,7 +40,15 @@ export function AdminForm({
     {},
   );
   return (
-    <form ref={ref} action={submit} className="cs-form">
+    <form
+      ref={ref}
+      className="cs-form"
+      onSubmit={(event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        startTransition(() => submit(data));
+      }}
+    >
       <input type="hidden" name="id" value={id} />
       <fieldset disabled={pending}>
         {children}

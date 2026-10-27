@@ -164,6 +164,16 @@ test('public request to owner review to customer', async ({
       .click();
     await expect(page).toHaveURL(/\/admin\/customers\//);
     customerId = page.url().split('/').at(-1);
+    await page.getByLabel('Name', { exact: true }).fill('A');
+    await page
+      .getByRole('button', { name: 'Save customer', exact: true })
+      .click();
+    await expect(page.getByRole('alert')).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Save customer', exact: true }),
+    ).toBeEnabled();
+    await expect(page.getByLabel('Name', { exact: true })).toHaveValue('A');
+    await page.getByLabel('Name', { exact: true }).fill(payload.name);
     await page
       .getByLabel('Company', { exact: true })
       .fill('Updated verification company');
