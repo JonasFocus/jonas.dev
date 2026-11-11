@@ -19,9 +19,9 @@ const structuredData = {
   '@graph': [
     {
       '@type': 'ProfessionalService',
-      '@id': 'https://jonasinfocus.com/#business',
+      '@id': 'https://www.jonasinfocus.com/#business',
       name: 'Jonas',
-      url: 'https://jonasinfocus.com',
+      url: 'https://www.jonasinfocus.com',
       description:
         'Independent design and development for websites, SaaS products, and custom web applications.',
       areaServed: 'Worldwide',
