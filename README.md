@@ -44,25 +44,25 @@ The homepage renders without Supabase. The inquiry form and the admin need it.
 | `OWNER_EMAIL`                                           | script | setup only | Only `scripts/provision-owner.mjs` reads it.                                                    |
 | `E2E_OWNER_EMAIL`, `E2E_OWNER_PASSWORD`, `E2E_BASE_URL` | test   | e2e only   | Only Playwright reads them. The base URL defaults to `http://localhost:3000`.                   |
 
-On Vercel, the API also accepts the origins in `VERCEL_URL` and `VERCEL_PROJECT_PRODUCTION_URL`, and reads the client IP from `x-vercel-forwarded-for`. Outside Vercel, every request counts against the same rate limit.
+On Vercel, the API also accepts the origins in `VERCEL_URL`, `VERCEL_BRANCH_URL` and `VERCEL_PROJECT_PRODUCTION_URL`, and reads the client IP from `x-vercel-forwarded-for`. Outside Vercel, every request counts against the same rate limit.
 
 Give each environment its own database and secrets. Never add the `NEXT_PUBLIC_` prefix to a server secret.
 
 ## Commands
 
-| Command             | What it does                                                                              |
-| ------------------- | ----------------------------------------------------------------------------------------- |
-| `npm run dev`       | Starts the dev server.                                                                    |
-| `npm run lint`      | Runs oxlint with type-aware rules.                                                        |
-| `npm run format`    | Formats with oxfmt.                                                                       |
-| `npm run typecheck` | Generates route types, then runs `tsc --noEmit`.                                          |
-| `npm test`          | Runs validation and Slack tests, and runs the real migrations and RLS policies in PGlite. |
-| `npm run test:e2e`  | Runs Playwright against a running app and a real Supabase project.                        |
-| `npm run test:public` | Runs public UI regressions against a production build without Supabase credentials. |
-| `npm run test:session` | Checks login outage recovery and unauthorized denial against a local mock service. |
-| `npm run build`     | Builds for production.                                                                    |
+| Command                | What it does                                                                              |
+| ---------------------- | ----------------------------------------------------------------------------------------- |
+| `npm run dev`          | Starts the dev server.                                                                    |
+| `npm run lint`         | Runs oxlint with type-aware rules.                                                        |
+| `npm run format`       | Formats with oxfmt.                                                                       |
+| `npm run typecheck`    | Generates route types, then runs `tsc --noEmit`.                                          |
+| `npm test`             | Runs validation and Slack tests, and runs the real migrations and RLS policies in PGlite. |
+| `npm run test:e2e`     | Runs Playwright against a running app and a real Supabase project.                        |
+| `npm run test:public`  | Runs public UI regressions against a production build without Supabase credentials.       |
+| `npm run test:session` | Checks login outage recovery and unauthorized denial against a local mock service.        |
+| `npm run build`        | Builds for production.                                                                    |
 
-CI (`.github/workflows/verify.yml`) runs lint, typecheck, tests, build, `npm audit` across production and development dependencies at every severity, public UI browser regressions, and local session-recovery checks on every push and pull request. CI does not run the authenticated provider e2e tests.
+CI (`.github/workflows/verify.yml`) runs lint, a formatting check, typecheck, tests, build, `npm audit` across production and development dependencies at every severity, public UI browser regressions, and local session-recovery checks on every pull request and every push to `main`. CI does not run the authenticated provider e2e tests.
 
 To run public UI regressions locally, run `npm run build`, `npx playwright install chromium`, and `npm run test:public`. The tests start their own production server on port 3012.
 

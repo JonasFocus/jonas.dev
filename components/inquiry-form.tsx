@@ -121,7 +121,13 @@ function ProjectRange({
   );
 }
 
-export function InquiryForm({ caseStudy }: { caseStudy?: Study }) {
+export function InquiryForm({
+  caseStudy,
+  onSent,
+}: {
+  caseStudy?: Study;
+  onSent?: () => void;
+}) {
   const id = useId();
   const submissionId = useRef<string | null>(null);
   const [result, setResult] = useState<Result>({ kind: 'idle' });
@@ -171,6 +177,7 @@ export function InquiryForm({ caseStudy }: { caseStudy?: Study }) {
       ) {
         setResult({ kind: 'success', reference: body.reference });
         submissionId.current = null;
+        onSent?.();
       } else {
         const message =
           typeof body === 'object' &&
@@ -371,6 +378,9 @@ export function InquiryButton({
   const dialog = useRef<HTMLDialogElement>(null);
   const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const id = useId();
+  // The dialog stays mounted to keep a draft; a sent request gets a fresh form next time.
+  const [sent, setSent] = useState(false);
+  const [formKey, setFormKey] = useState(0);
   useEffect(() => {
     if (!open) return;
     dialog.current?.showModal();
@@ -392,7 +402,13 @@ export function InquiryButton({
             ref={dialog}
             className="inquiry-dialog"
             aria-labelledby={id}
-            onClose={() => setOpen(false)}
+            onClose={() => {
+              setOpen(false);
+              if (sent) {
+                setSent(false);
+                setFormKey((key) => key + 1);
+              }
+            }}
           >
             <button
               className="inquiry-close"
@@ -402,7 +418,7 @@ export function InquiryButton({
               ×
             </button>
             <h2 id={id}>Let&apos;s talk about your idea.</h2>
-            <InquiryForm />
+            <InquiryForm key={formKey} onSent={() => setSent(true)} />
           </dialog>,
           portalTarget,
         )}

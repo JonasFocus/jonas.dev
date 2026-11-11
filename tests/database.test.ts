@@ -354,9 +354,7 @@ test('intake reports whether a submission is new or a retry', async () => {
 
 test('admin_users holds exactly one owner', async () => {
   await assert.rejects(
-    db.query('insert into public.admin_users(user_id) values ($1)', [
-      stranger,
-    ]),
+    db.query('insert into public.admin_users(user_id) values ($1)', [stranger]),
     /duplicate key/,
   );
   const owners = await db.query<{ user_id: string }>(

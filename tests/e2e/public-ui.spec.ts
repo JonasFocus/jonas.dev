@@ -94,3 +94,41 @@ test('mobile request survives desktop resize without leaving the page locked', a
     .click();
   await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
 });
+
+test('a sent request leaves a fresh form for the next one', async ({
+  page,
+}) => {
+  await page.route('**/api/requests', (route) =>
+    route.fulfill({
+      status: 201,
+      json: { ok: true, reference: '11111111-1111-4111-8111-111111111111' },
+    }),
+  );
+  await page.goto('/');
+  const start = page
+    .getByRole('button', { name: 'Start your project', exact: false })
+    .first();
+  await start.click();
+  const dialog = page.getByRole('dialog');
+  const name = dialog.getByRole('textbox', {
+    name: 'Your name *',
+    exact: true,
+  });
+  await name.fill('Fresh form check');
+  await dialog
+    .getByRole('textbox', { name: 'Email address *', exact: true })
+    .fill('fresh@example.com');
+  await dialog
+    .getByRole('textbox', { name: 'What would you like to build? *' })
+    .fill('A fictional project used only by the UI regression test.');
+  await dialog.getByRole('checkbox', { name: /I agree/ }).check();
+  await dialog.getByRole('button', { name: /Send project request/ }).click();
+  await expect(dialog.getByText('Request received.')).toBeVisible();
+  await dialog
+    .getByRole('button', { name: 'Close request', exact: true })
+    .click();
+  await expect(dialog).not.toBeVisible();
+  await start.click();
+  await expect(name).toBeVisible();
+  await expect(name).toHaveValue('');
+});
