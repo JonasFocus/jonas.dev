@@ -5,6 +5,8 @@ export function isAllowedOrigin(request: Request) {
   if (process.env.VERCEL) {
     for (const host of [
       process.env.VERCEL_URL,
+      // Preview links usually open the branch alias, not the per-deployment URL.
+      process.env.VERCEL_BRANCH_URL,
       process.env.VERCEL_PROJECT_PRODUCTION_URL,
     ]) {
       if (host) allowed.push(`https://${host}`);
