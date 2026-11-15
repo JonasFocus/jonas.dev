@@ -262,7 +262,10 @@ export function Header({
   }
   return (
     <section className="w-full px-4 pt-6 sm:px-8 sticky top-0 z-50">
-      <header ref={ref} className="relative mx-auto w-full max-w-5xl">
+      <header
+        ref={ref}
+        className="intro-header relative mx-auto w-full max-w-5xl"
+      >
         <div className="relative flex h-14 items-center justify-between rounded-full border border-border/60 bg-background/50 px-3 backdrop-blur-md sm:px-4">
           <a
             href="#top"
