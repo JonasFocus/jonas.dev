@@ -693,3 +693,103 @@ html:has(.meridian-page) {
     padding: 20px;
   }
 }
+
+/* First-load entrance: a staged, blurred fade that settles from the top of the
+   page down. Pure CSS so it plays straight from the server render without
+   waiting on hydration, and skipped entirely for reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .meridian-page main > section:first-child {
+    animation: none;
+  }
+  .meridian-page .intro-header,
+  .meridian-page main > section:first-child > div > div:first-child > *,
+  .meridian-page main > section:first-child > div > div:last-child {
+    animation: intro-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    animation-delay: calc(var(--intro-i, 0) * 110ms + 60ms);
+  }
+  .meridian-page .intro-header {
+    --intro-i: 0;
+    animation-name: intro-drop;
+  }
+  .meridian-page
+    main
+    > section:first-child
+    > div
+    > div:first-child
+    > :nth-child(1) {
+    --intro-i: 1;
+  }
+  .meridian-page
+    main
+    > section:first-child
+    > div
+    > div:first-child
+    > :nth-child(2) {
+    --intro-i: 2;
+  }
+  .meridian-page
+    main
+    > section:first-child
+    > div
+    > div:first-child
+    > :nth-child(3) {
+    --intro-i: 3;
+  }
+  .meridian-page
+    main
+    > section:first-child
+    > div
+    > div:first-child
+    > :nth-child(4) {
+    --intro-i: 4;
+  }
+  .meridian-page
+    main
+    > section:first-child
+    > div
+    > div:first-child
+    > :nth-child(5) {
+    --intro-i: 5;
+  }
+  .meridian-page main > section:first-child > div > div:last-child {
+    --intro-i: 3;
+    animation-name: intro-visual;
+    animation-duration: 1.6s;
+  }
+}
+@keyframes intro-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+@keyframes intro-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-14px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+@keyframes intro-visual {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.985);
+    filter: blur(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
